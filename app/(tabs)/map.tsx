@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react-native';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI, RouteInfo } from '@/types/navigation';
 
@@ -239,28 +241,90 @@ export default function MapScreen() {
         )}
       </View>
 
-      {/* Map Area (Simulated) */}
+      {/* Google Maps */}
       <View style={styles.mapContainer}>
-        <View style={styles.mapPlaceholder}>
-          <MapPin size={48} color="#2563eb" />
-          <Text style={styles.mapText}>Interactive Map</Text>
-          <Text style={styles.mapSubtext}>
-            {currentLocation 
-              ? `Lat: ${currentLocation.latitude.toFixed(6)}, Lng: ${currentLocation.longitude.toFixed(6)}`
-              : 'Waiting for location...'
-            }
-          </Text>
-          
-          {/* Simulated Map Features */}
-          <View style={styles.mapFeatures}>
-            <View style={styles.roadIndicator}>
-              <Text style={styles.roadText}>→ Session Road (Main)</Text>
+        {currentLocation ? (
+          Platform.OS === 'web' ? (
+            <View style={styles.mapPlaceholder}>
+              <MapPin size={48} color="#2563eb" />
+              <Text style={styles.mapText}>Interactive Map</Text>
+              <Text style={styles.mapSubtext}>
+                Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
+              </Text>
+              <Text style={styles.webMapNote}>Use mobile app for full map experience</Text>
+              
+              <View style={styles.webPOIList}>
+                {nearbyPOIs.slice(0, 3).map((poi) => (
+                  <TouchableOpacity
+                    key={poi.id}
+                    style={styles.webPOIItem}
+                    onPress={() => handlePOISelect(poi)}
+                  >
+                    <MapPin size={16} color="#2563eb" />
+                    <Text style={styles.webPOIText}>{poi.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
-            <View style={styles.oneWayIndicator}>
-              <Text style={styles.oneWayText}>← One-way Street</Text>
-            </View>
+          ) : (
+            <MapView
+              style={styles.map}
+              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+              initialRegion={{
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              showsUserLocation={true}
+              showsMyLocationButton={false}
+              showsCompass={true}
+              showsScale={true}
+              mapType="standard"
+            >
+              <Marker
+                coordinate={{
+                  latitude: currentLocation.latitude,
+                  longitude: currentLocation.longitude,
+                }}
+                title="Your Location"
+                description="Current GPS position"
+                pinColor="blue"
+              />
+              
+              {nearbyPOIs.map((poi) => (
+                <Marker
+                  key={poi.id}
+                  coordinate={{
+                    latitude: poi.lat,
+                    longitude: poi.lng,
+                  }}
+                  title={poi.name}
+                  description={poi.type}
+                  onPress={() => handlePOISelect(poi)}
+                />
+              ))}
+              
+              {selectedPOI && (
+                <Marker
+                  coordinate={{
+                    latitude: selectedPOI.lat,
+                    longitude: selectedPOI.lng,
+                  }}
+                  title={selectedPOI.name}
+                  description={selectedPOI.type}
+                  pinColor="red"
+                />
+              )}
+            </MapView>
+          )
+        ) : (
+          <View style={styles.mapPlaceholder}>
+            <MapPin size={48} color="#2563eb" />
+            <Text style={styles.mapText}>Loading Map...</Text>
+            <Text style={styles.mapSubtext}>Waiting for location...</Text>
           </View>
-        </View>
+        )}
 
         {/* My Location Button */}
         <TouchableOpacity 
@@ -458,6 +522,10 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
   },
+  map: {
+    width: Dimensions.get('window').width,
+    height: '100%',
+  },
   mapPlaceholder: {
     flex: 1,
     justifyContent: 'center',
@@ -477,34 +545,7 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     marginTop: 4,
   },
-  mapFeatures: {
-    position: 'absolute',
-    top: 20,
-    left: 20,
-  },
-  roadIndicator: {
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginBottom: 8,
-  },
-  roadText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  oneWayIndicator: {
-    backgroundColor: '#f59e0b',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  oneWayText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
+
   myLocationButton: {
     position: 'absolute',
     bottom: 20,
@@ -682,5 +723,29 @@ const styles = StyleSheet.create({
   layerText: {
     fontSize: 14,
     color: '#374151',
+  },
+  webMapNote: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  webPOIList: {
+    marginTop: 16,
+    gap: 8,
+  },
+  webPOIItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    gap: 8,
+  },
+  webPOIText: {
+    fontSize: 14,
+    color: '#1f2937',
+    fontWeight: '500',
   },
 });

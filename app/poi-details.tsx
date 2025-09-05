@@ -8,6 +8,7 @@ import {
   Image,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -27,6 +28,7 @@ import {
 } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI } from '@/types/navigation';
 
@@ -275,6 +277,61 @@ export default function POIDetailsScreen() {
           </View>
         </View>
 
+        {/* Interactive Map */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Location</Text>
+          <View style={styles.mapContainer}>
+            {Platform.OS === 'web' ? (
+              <View style={styles.webMapFallback}>
+                <MapPin size={32} color="#2563eb" />
+                <Text style={styles.webMapTitle}>Location Preview</Text>
+                <Text style={styles.webMapCoords}>
+                  {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
+                </Text>
+                <Text style={styles.webMapNote}>
+                  Use mobile app or tap &quot;Google Maps&quot; below for interactive map
+                </Text>
+              </View>
+            ) : (
+              <MapView
+                style={styles.map}
+                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                initialRegion={{
+                  latitude: poi.lat,
+                  longitude: poi.lng,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
+                scrollEnabled={true}
+                zoomEnabled={true}
+                pitchEnabled={false}
+                rotateEnabled={false}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: poi.lat,
+                    longitude: poi.lng,
+                  }}
+                  title={poi.name}
+                  description={poi.type}
+                  pinColor="red"
+                />
+                {currentLocation && (
+                  <Marker
+                    coordinate={{
+                      latitude: currentLocation.latitude,
+                      longitude: currentLocation.longitude,
+                    }}
+                    title="Your Location"
+                    description="Current GPS position"
+                    pinColor="blue"
+                  />
+                )}
+              </MapView>
+            )}
+          </View>
+        </View>
+
         {/* Navigation Tips */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Navigation Tips</Text>
@@ -313,7 +370,7 @@ export default function POIDetailsScreen() {
             onPress={openInGoogleMaps}
           >
             <ExternalLink size={20} color="#2563eb" />
-            <Text style={styles.mapsButtonText}>Open in Maps</Text>
+            <Text style={styles.mapsButtonText}>Google Maps</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -560,5 +617,41 @@ const styles = StyleSheet.create({
     color: '#2563eb',
     fontSize: 16,
     fontWeight: '600',
+  },
+  mapContainer: {
+    height: 200,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: '#e5e7eb',
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  webMapFallback: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
+    padding: 20,
+  },
+  webMapTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginTop: 8,
+  },
+  webMapCoords: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginTop: 4,
+    fontFamily: 'monospace',
+  },
+  webMapNote: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginTop: 8,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });

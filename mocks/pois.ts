@@ -10,7 +10,7 @@ export const mockPOIs: POI[] = [
     description: 'A historic urban park in the heart of Baguio City, perfect for boating, picnics, and leisurely walks.',
     hours: '24 hours',
     rating: 4.5,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4a/burnham-park.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/burnham-park-lake.jpg', 'https://live.staticflickr.com/65535/48925925012_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop'],
     amenities: ['Parking', 'Restrooms', 'Boat Rental'],
   },
   {
@@ -22,7 +22,7 @@ export const mockPOIs: POI[] = [
     description: 'Our Lady of the Atonement Cathedral, also known as Baguio Cathedral, is a beautiful pink stone church.',
     hours: '6:00 AM - 7:00 PM',
     rating: 4.3,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4b/baguio-cathedral.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/cathedral-pink.jpg', 'https://live.staticflickr.com/4907/46057825391_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1520637836862-4d197d17c13a?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop'],
     amenities: ['Parking'],
   },
   {
@@ -34,7 +34,7 @@ export const mockPOIs: POI[] = [
     description: 'The main commercial street of Baguio City, lined with shops, restaurants, and cafes.',
     hours: 'Varies by establishment',
     rating: 4.2,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4c/session-road.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/session-road-night.jpg', 'https://live.staticflickr.com/4907/46057825392_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop'],
     amenities: ['Shopping', 'Restaurants', 'ATM'],
   },
   {
@@ -46,7 +46,7 @@ export const mockPOIs: POI[] = [
     description: 'A scenic viewpoint offering panoramic views of the mining town of Itogon and the Cordillera mountains.',
     hours: '6:00 AM - 6:00 PM',
     rating: 4.1,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4d/mines-view-park.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/mines-view-panorama.jpg', 'https://live.staticflickr.com/4907/46057825393_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'],
     amenities: ['Parking', 'Souvenir Shops', 'Photo Spots'],
   },
   {
@@ -58,7 +58,7 @@ export const mockPOIs: POI[] = [
     description: 'A beautiful garden showcasing various plant species native to the Cordillera region.',
     hours: '8:00 AM - 5:00 PM',
     rating: 4.0,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4e/botanical-garden.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/botanical-garden-entrance.jpg', 'https://live.staticflickr.com/4907/46057825394_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1574263867128-a3d5c1b1deaa?w=800&h=600&fit=crop'],
     amenities: ['Parking', 'Walking Trails', 'Picnic Areas'],
   },
   {
@@ -70,7 +70,7 @@ export const mockPOIs: POI[] = [
     description: 'A popular park known for horseback riding and its proximity to The Mansion.',
     hours: '6:00 AM - 6:00 PM',
     rating: 3.9,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/4f/wright-park.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/wright-park-horses.jpg', 'https://live.staticflickr.com/4907/46057825395_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop'],
     amenities: ['Parking', 'Horse Riding', 'Restrooms'],
   },
   {
@@ -84,7 +84,7 @@ export const mockPOIs: POI[] = [
     phone: '+63 74 442 5555',
     website: 'www.smsupermalls.com',
     rating: 4.2,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/50/sm-city-baguio.jpg?w=1200&h=-1&s=1', 'https://www.smsupermalls.com/images/sm-baguio-exterior.jpg', 'https://live.staticflickr.com/4907/46057825396_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop'],
     amenities: ['Parking', 'Restaurants', 'Cinema', 'ATM', 'WiFi'],
   },
   {
@@ -96,7 +96,7 @@ export const mockPOIs: POI[] = [
     description: 'A former US military base turned into a recreational area with golf courses, hotels, and nature trails.',
     hours: '24 hours',
     rating: 4.4,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/51/camp-john-hay.jpg?w=1200&h=-1&s=1', 'https://www.campjohnhay.com.ph/images/golf-course.jpg', 'https://live.staticflickr.com/4907/46057825397_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1574263867128-a3d5c1b1deaa?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop'],
     amenities: ['Golf Course', 'Hotels', 'Restaurants', 'Nature Trails'],
   },
   {
@@ -108,7 +108,7 @@ export const mockPOIs: POI[] = [
     description: 'The official summer residence of the President of the Philippines, featuring beautiful architecture and gardens.',
     hours: 'External viewing only',
     rating: 4.0,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/52/the-mansion.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/mansion-exterior.jpg', 'https://live.staticflickr.com/4907/46057825398_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1520637836862-4d197d17c13a?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&h=600&fit=crop'],
     amenities: ['Photo Spots', 'Gardens'],
   },
   {
@@ -120,7 +120,7 @@ export const mockPOIs: POI[] = [
     description: 'A bustling local market selling fresh produce, local crafts, and traditional goods.',
     hours: '6:00 AM - 6:00 PM',
     rating: 3.8,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/53/baguio-public-market.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/public-market-interior.jpg', 'https://live.staticflickr.com/4907/46057825399_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop'],
     amenities: ['Local Products', 'Fresh Produce', 'Handicrafts'],
   },
   {
@@ -132,7 +132,7 @@ export const mockPOIs: POI[] = [
     description: 'A scenic rock formation along Kennon Road offering spectacular mountain views.',
     hours: '24 hours',
     rating: 4.3,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/54/lions-head.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/lions-head-kennon.jpg', 'https://live.staticflickr.com/4907/46057825400_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop'],
     amenities: ['Photo Spots', 'Scenic Views'],
   },
   {
@@ -144,7 +144,7 @@ export const mockPOIs: POI[] = [
     description: 'A historic training facility for teachers with beautiful pine trees and peaceful surroundings.',
     hours: '8:00 AM - 5:00 PM',
     rating: 3.7,
-    photos: ['https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/4a/4a/55/teachers-camp.jpg?w=1200&h=-1&s=1', 'https://www.baguio.gov.ph/images/teachers-camp-pines.jpg', 'https://live.staticflickr.com/4907/46057825401_8b9c9c9c9c_b.jpg'],
+    photos: ['https://images.unsplash.com/photo-1574263867128-a3d5c1b1deaa?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop'],
     amenities: ['Conference Facilities', 'Accommodation'],
   },
 ];
