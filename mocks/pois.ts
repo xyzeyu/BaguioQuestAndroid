@@ -10,7 +10,7 @@ export const mockPOIs: POI[] = [
     description: 'A historic urban park in the heart of Baguio City, perfect for boating, picnics, and leisurely walks.',
     hours: '24 hours',
     rating: 4.5,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking', 'Restrooms', 'Boat Rental'],
   },
   {
@@ -22,7 +22,7 @@ export const mockPOIs: POI[] = [
     description: 'Our Lady of the Atonement Cathedral, also known as Baguio Cathedral, is a beautiful pink stone church.',
     hours: '6:00 AM - 7:00 PM',
     rating: 4.3,
-    photos: ['https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=800'],
+    photos: ['https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking'],
   },
   {
@@ -34,7 +34,7 @@ export const mockPOIs: POI[] = [
     description: 'The main commercial street of Baguio City, lined with shops, restaurants, and cafes.',
     hours: 'Varies by establishment',
     rating: 4.2,
-    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800'],
+    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Shopping', 'Restaurants', 'ATM'],
   },
   {
@@ -46,7 +46,7 @@ export const mockPOIs: POI[] = [
     description: 'A scenic viewpoint offering panoramic views of the mining town of Itogon and the Cordillera mountains.',
     hours: '6:00 AM - 6:00 PM',
     rating: 4.1,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking', 'Souvenir Shops', 'Photo Spots'],
   },
   {
@@ -58,7 +58,7 @@ export const mockPOIs: POI[] = [
     description: 'A beautiful garden showcasing various plant species native to the Cordillera region.',
     hours: '8:00 AM - 5:00 PM',
     rating: 4.0,
-    photos: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800'],
+    photos: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking', 'Walking Trails', 'Picnic Areas'],
   },
   {
@@ -70,7 +70,7 @@ export const mockPOIs: POI[] = [
     description: 'A popular park known for horseback riding and its proximity to The Mansion.',
     hours: '6:00 AM - 6:00 PM',
     rating: 3.9,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking', 'Horse Riding', 'Restrooms'],
   },
   {
@@ -84,7 +84,7 @@ export const mockPOIs: POI[] = [
     phone: '+63 74 442 5555',
     website: 'www.smsupermalls.com',
     rating: 4.2,
-    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800'],
+    photos: ['https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Parking', 'Restaurants', 'Cinema', 'ATM', 'WiFi'],
   },
   {
@@ -96,7 +96,7 @@ export const mockPOIs: POI[] = [
     description: 'A former US military base turned into a recreational area with golf courses, hotels, and nature trails.',
     hours: '24 hours',
     rating: 4.4,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Golf Course', 'Hotels', 'Restaurants', 'Nature Trails'],
   },
   {
@@ -108,7 +108,7 @@ export const mockPOIs: POI[] = [
     description: 'The official summer residence of the President of the Philippines, featuring beautiful architecture and gardens.',
     hours: 'External viewing only',
     rating: 4.0,
-    photos: ['https://images.unsplash.com/photo-1520637836862-4d197d17c93a?w=800'],
+    photos: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Photo Spots', 'Gardens'],
   },
   {
@@ -120,7 +120,7 @@ export const mockPOIs: POI[] = [
     description: 'A bustling local market selling fresh produce, local crafts, and traditional goods.',
     hours: '6:00 AM - 6:00 PM',
     rating: 3.8,
-    photos: ['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800'],
+    photos: ['https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Local Products', 'Fresh Produce', 'Handicrafts'],
   },
   {
@@ -132,7 +132,7 @@ export const mockPOIs: POI[] = [
     description: 'A scenic rock formation along Kennon Road offering spectacular mountain views.',
     hours: '24 hours',
     rating: 4.3,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Photo Spots', 'Scenic Views'],
   },
   {
@@ -144,7 +144,7 @@ export const mockPOIs: POI[] = [
     description: 'A historic training facility for teachers with beautiful pine trees and peaceful surroundings.',
     hours: '8:00 AM - 5:00 PM',
     rating: 3.7,
-    photos: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800'],
+    photos: ['https://images.unsplash.com/photo-1562774053-701939374585?w=800&q=80&auto=format&fit=crop'],
     amenities: ['Conference Facilities', 'Accommodation'],
   },
 ];
