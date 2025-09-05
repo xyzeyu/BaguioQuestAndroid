@@ -8,7 +8,7 @@ import {
   Image,
   Alert,
   Platform,
-  Dimensions,
+
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -28,7 +28,7 @@ import {
 } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI } from '@/types/navigation';
 
@@ -52,7 +52,7 @@ export default function POIDetailsScreen() {
       setPOI(poiData);
       setIsSaved(isSavedPOI(poiId));
     }
-  }, [poiId]);
+  }, [poiId, getPOIById, isSavedPOI]);
 
   const handleNavigate = () => {
     if (!poi || !currentLocation) {
@@ -113,7 +113,7 @@ export default function POIDetailsScreen() {
       
       try {
         await WebBrowser.openBrowserAsync(url);
-      } catch (error) {
+      } catch {
         // Fallback to Apple Maps
         const appleMapsUrl = `http://maps.apple.com/?q=${query}&ll=${coordinates}&z=15`;
         await WebBrowser.openBrowserAsync(appleMapsUrl);
@@ -124,7 +124,7 @@ export default function POIDetailsScreen() {
       
       try {
         await WebBrowser.openBrowserAsync(url);
-      } catch (error) {
+      } catch {
         // Fallback to web version
         const webUrl = `https://www.google.com/maps/search/?api=1&query=${query}&center=${coordinates}&zoom=15`;
         await WebBrowser.openBrowserAsync(webUrl);
@@ -289,45 +289,20 @@ export default function POIDetailsScreen() {
                   {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
                 </Text>
                 <Text style={styles.webMapNote}>
-                  Use mobile app or tap &quot;Google Maps&quot; below for interactive map
+                  Use mobile app or tap Google Maps below for interactive map
                 </Text>
               </View>
             ) : (
-              <MapView
-                style={styles.map}
-                provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-                initialRegion={{
-                  latitude: poi.lat,
-                  longitude: poi.lng,
-                  latitudeDelta: 0.01,
-                  longitudeDelta: 0.01,
-                }}
-                scrollEnabled={true}
-                zoomEnabled={true}
-                pitchEnabled={false}
-                rotateEnabled={false}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: poi.lat,
-                    longitude: poi.lng,
-                  }}
-                  title={poi.name}
-                  description={poi.type}
-                  pinColor="red"
-                />
-                {currentLocation && (
-                  <Marker
-                    coordinate={{
-                      latitude: currentLocation.latitude,
-                      longitude: currentLocation.longitude,
-                    }}
-                    title="Your Location"
-                    description="Current GPS position"
-                    pinColor="blue"
-                  />
-                )}
-              </MapView>
+              <View style={styles.webMapFallback}>
+                <MapPin size={32} color="#2563eb" />
+                <Text style={styles.webMapTitle}>Location Preview</Text>
+                <Text style={styles.webMapCoords}>
+                  {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
+                </Text>
+                <Text style={styles.webMapNote}>
+                  Use mobile app or tap Google Maps below for interactive map
+                </Text>
+              </View>
             )}
           </View>
         </View>

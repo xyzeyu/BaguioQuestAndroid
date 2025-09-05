@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -23,21 +23,21 @@ import {
 } from 'lucide-react-native';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
-import { POI, RouteInfo } from '@/types/navigation';
+import { POI } from '@/types/navigation';
 
 export default function MapScreen() {
   const {
     currentLocation,
     selectedPOI,
     currentRoute,
-    isNavigating,
+
     nearbyPOIs,
     updateLocation,
     selectPOI,
     startNavigation,
-    stopNavigation,
+
     findRoute,
   } = useBaguioQuest();
 
@@ -45,11 +45,7 @@ export default function MapScreen() {
   const [showLayers, setShowLayers] = useState(false);
   const [locationPermission, setLocationPermission] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    requestLocationPermission();
-  }, []);
-
-  const requestLocationPermission = async () => {
+  const requestLocationPermission = useCallback(async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       setLocationPermission(status === 'granted');
@@ -67,7 +63,11 @@ export default function MapScreen() {
       console.error('Error requesting location permission:', error);
       setLocationPermission(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    requestLocationPermission();
+  }, [requestLocationPermission]);
 
   const useDemoLocation = () => {
     // Use Baguio City center as demo location
@@ -267,56 +267,29 @@ export default function MapScreen() {
               </View>
             </View>
           ) : (
-            <MapView
-              style={styles.map}
-              provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-              initialRegion={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              showsUserLocation={true}
-              showsMyLocationButton={false}
-              showsCompass={true}
-              showsScale={true}
-              mapType="standard"
-            >
-              <Marker
-                coordinate={{
-                  latitude: currentLocation.latitude,
-                  longitude: currentLocation.longitude,
-                }}
-                title="Your Location"
-                description="Current GPS position"
-                pinColor="blue"
-              />
-              
-              {nearbyPOIs.map((poi) => (
-                <Marker
-                  key={poi.id}
-                  coordinate={{
-                    latitude: poi.lat,
-                    longitude: poi.lng,
-                  }}
-                  title={poi.name}
-                  description={poi.type}
-                  onPress={() => handlePOISelect(poi)}
-                />
-              ))}
-              
-              {selectedPOI && (
-                <Marker
-                  coordinate={{
-                    latitude: selectedPOI.lat,
-                    longitude: selectedPOI.lng,
-                  }}
-                  title={selectedPOI.name}
-                  description={selectedPOI.type}
-                  pinColor="red"
-                />
-              )}
-            </MapView>
+            <View style={styles.mapContainer}>
+              <View style={styles.mapPlaceholder}>
+                <MapPin size={48} color="#2563eb" />
+                <Text style={styles.mapText}>Interactive Map</Text>
+                <Text style={styles.mapSubtext}>
+                  Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
+                </Text>
+                <Text style={styles.webMapNote}>Native map integration coming soon</Text>
+                
+                <View style={styles.webPOIList}>
+                  {nearbyPOIs.slice(0, 3).map((poi) => (
+                    <TouchableOpacity
+                      key={poi.id}
+                      style={styles.webPOIItem}
+                      onPress={() => handlePOISelect(poi)}
+                    >
+                      <MapPin size={16} color="#2563eb" />
+                      <Text style={styles.webPOIText}>{poi.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
           )
         ) : (
           <View style={styles.mapPlaceholder}>
