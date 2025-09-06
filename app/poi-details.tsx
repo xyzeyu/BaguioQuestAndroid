@@ -10,6 +10,7 @@ import {
   Platform,
   Linking,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
   ArrowLeft,
@@ -271,29 +272,95 @@ export default function POIDetailsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Location</Text>
           <View style={styles.mapContainer}>
-            {Platform.OS === 'web' ? (
-              <View style={styles.webMapFallback}>
-                <MapPin size={32} color="#2563eb" />
-                <Text style={styles.webMapTitle}>Location Preview</Text>
-                <Text style={styles.webMapCoords}>
-                  {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
-                </Text>
-                <Text style={styles.webMapNote}>
-                  Use mobile app or tap Google Maps below for interactive map
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.webMapFallback}>
-                <MapPin size={32} color="#2563eb" />
-                <Text style={styles.webMapTitle}>Location Preview</Text>
-                <Text style={styles.webMapCoords}>
-                  {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
-                </Text>
-                <Text style={styles.webMapNote}>
-                  Use mobile app or tap Google Maps below for interactive map
-                </Text>
-              </View>
-            )}
+            <WebView
+              style={styles.map}
+              source={{
+                html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { height: 200px; width: 100%; }
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      font-family: Arial, sans-serif;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading">Loading map...</div>
+  <div id="map" style="display: none;"></div>
+  <script>
+    function initMap() {
+      const location = { lat: ${poi.lat}, lng: ${poi.lng} };
+      const map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 16,
+        center: location,
+        mapTypeId: 'roadmap',
+        disableDefaultUI: false,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false
+      });
+      
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: '${poi.name.replace(/'/g, "\\'").replace(/"/g, '\\"')}',
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23ef4444"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'),
+          scaledSize: new google.maps.Size(32, 32),
+          anchor: new google.maps.Point(16, 32)
+        }
+      });
+      
+      const infoWindow = new google.maps.InfoWindow({
+        content: '<div style="padding: 8px; max-width: 200px;"><h3 style="margin: 0 0 4px 0; font-size: 14px; color: #1f2937;">' + '${poi.name.replace(/'/g, "\\'").replace(/"/g, '\\"')}' + '</h3><p style="margin: 0; font-size: 12px; color: #6b7280;">' + '${poi.type}' + '</p>' + ${poi.rating ? `'<p style="margin: 4px 0 0 0; font-size: 12px; color: #f59e0b;">⭐ ${poi.rating}</p>'` : `''`} + '</div>'
+      });
+      
+      marker.addListener('click', () => {
+        infoWindow.open(map, marker);
+      });
+      
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('map').style.display = 'block';
+    }
+    
+    function onError() {
+      document.getElementById('loading').innerHTML = 'Map failed to load';
+    }
+  </script>
+  <script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO_BcqCGUOdFZE&callback=initMap"
+    onerror="onError()">
+  </script>
+</body>
+</html>`
+              }}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={true}
+              scalesPageToFit={true}
+              scrollEnabled={false}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+          
+          {/* Coordinates Info */}
+          <View style={styles.coordinatesInfo}>
+            <Text style={styles.coordinatesLabel}>Coordinates:</Text>
+            <Text style={styles.coordinatesText}>
+              {poi.lat.toFixed(6)}, {poi.lng.toFixed(6)}
+            </Text>
           </View>
         </View>
 
@@ -588,35 +655,34 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: '#e5e7eb',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
   },
   map: {
     width: '100%',
     height: '100%',
   },
-  webMapFallback: {
-    flex: 1,
-    justifyContent: 'center',
+  coordinatesInfo: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f4f6',
-    padding: 20,
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
   },
-  webMapTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1f2937',
-    marginTop: 8,
-  },
-  webMapCoords: {
+  coordinatesLabel: {
     fontSize: 14,
     color: '#6b7280',
-    marginTop: 4,
-    fontFamily: 'monospace',
+    fontWeight: '500',
+    marginRight: 8,
   },
-  webMapNote: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 8,
-    textAlign: 'center',
-    fontStyle: 'italic',
+  coordinatesText: {
+    fontSize: 14,
+    color: '#1f2937',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
+    backgroundColor: '#f3f4f6',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
   },
 });
