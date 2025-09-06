@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   Platform,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -18,6 +19,7 @@ import {
   MapPin,
   Clock,
   Route,
+  ExternalLink,
 } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
@@ -104,6 +106,28 @@ export default function NavigationScreen() {
         },
       ]
     );
+  };
+
+  const openInGoogleMaps = () => {
+    if (!selectedPOI) return;
+
+    const destination = `${selectedPOI.lat},${selectedPOI.lng}`;
+    const origin = currentLocation ? `${currentLocation.latitude},${currentLocation.longitude}` : '';
+    
+    const url = Platform.select({
+      ios: `maps://app?saddr=${origin}&daddr=${destination}`,
+      android: `google.navigation:q=${destination}&mode=d`,
+      web: `https://www.google.com/maps/dir/${origin}/${destination}`,
+      default: `https://www.google.com/maps/dir/${origin}/${destination}`,
+    });
+    
+    if (url) {
+      Linking.openURL(url).catch(err => {
+        console.error('Error opening maps:', err);
+        // Fallback to web version
+        Linking.openURL(`https://www.google.com/maps/dir/${origin}/${destination}`);
+      });
+    }
   };
 
   const getInstructionIcon = (type: string) => {
@@ -222,9 +246,12 @@ export default function NavigationScreen() {
 
       {/* Bottom Actions */}
       <View style={styles.bottomActions}>
-        <TouchableOpacity style={styles.actionButton}>
-          <Route size={20} color="#2563eb" />
-          <Text style={styles.actionText}>Route</Text>
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={openInGoogleMaps}
+        >
+          <ExternalLink size={20} color="#2563eb" />
+          <Text style={styles.actionText}>Google Maps</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.actionButton}>

@@ -376,7 +376,7 @@ export default function MapScreen() {
               )}
             </View>
             <View style={styles.poiActions}>
-              <Text style={styles.poiDistance}>{poi.distance ? `${poi.distance}m` : 'N/A'}</Text>
+              <Text style={styles.poiDistance}>{poi.distance ? (poi.distance < 1000 ? `${Math.round(poi.distance)}m` : `${(poi.distance / 1000).toFixed(1)}km`) : 'N/A'}</Text>
               <TouchableOpacity
                 style={styles.poiMapsButton}
                 onPress={(e) => {
