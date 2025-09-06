@@ -18,7 +18,9 @@ import { POI } from '@/types/navigation';
 
 export default function SearchScreen() {
   const { query } = useLocalSearchParams<{ query?: string }>();
-  const { searchPOIs, recentSearches, popularPOIs, currentLocation, settings } = useBaguioQuest();
+  const { searchPOIs, recentSearches, popularPOIs, currentLocation, settings, isDarkMode } = useBaguioQuest();
+
+  const getStyles = (isDark: boolean) => createStyles(isDark);
   
   const [searchQuery, setSearchQuery] = useState(query || '');
   const [searchResults, setSearchResults] = useState<POI[]>([]);
@@ -93,6 +95,8 @@ export default function SearchScreen() {
     // Always show in kilometers for better readability
     return `${(poi.distance / 1000).toFixed(1)}km`;
   };
+
+  const styles = getStyles(isDarkMode);
 
   const renderPOI = ({ item }: { item: POI }) => (
     <TouchableOpacity
@@ -238,18 +242,18 @@ export default function SearchScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#111827' : '#f8fafc',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
   },
   backButton: {
     marginRight: 12,
@@ -258,7 +262,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    backgroundColor: isDark ? '#374151' : '#f3f4f6',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -267,20 +271,20 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     marginLeft: 8,
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   content: {
     flex: 1,
   },
   section: {
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     marginTop: 8,
     paddingVertical: 16,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     paddingHorizontal: 16,
     marginBottom: 12,
   },
@@ -290,13 +294,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
   },
   poiIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -307,11 +311,11 @@ const styles = StyleSheet.create({
   poiName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   poiType: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 2,
   },
   poiHours: {
@@ -336,17 +340,17 @@ const styles = StyleSheet.create({
   },
   poiDistance: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     fontWeight: '500',
   },
   mapsButton: {
     padding: 4,
     borderRadius: 4,
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
   },
   noResults: {
     fontSize: 14,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     textAlign: 'center',
     paddingVertical: 24,
   },
@@ -356,11 +360,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
   },
   recentText: {
     fontSize: 14,
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
     marginLeft: 12,
   },
   categoriesGrid: {
@@ -373,10 +377,10 @@ const styles = StyleSheet.create({
     width: '30%',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#374151' : '#f8fafc',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#4b5563' : '#e5e7eb',
   },
   categoryIcon: {
     fontSize: 24,
@@ -384,7 +388,7 @@ const styles = StyleSheet.create({
   },
   categoryName: {
     fontSize: 12,
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
     textAlign: 'center',
     fontWeight: '500',
   },

@@ -34,6 +34,8 @@ export default function SettingsScreen() {
     toggleDarkMode,
   } = useBaguioQuest();
 
+  const getStyles = (isDark: boolean) => createStyles(isDark);
+
   const [codingEnabled, setCodingEnabled] = useState(settings.numberCodingEnabled);
   const [offlineMode, setOfflineMode] = useState(settings.offlineMode);
   const [notifications, setNotifications] = useState(settings.notifications);
@@ -87,6 +89,8 @@ export default function SettingsScreen() {
       Alert.alert('Export Failed', 'Unable to export data. Please try again.');
     }
   };
+
+  const styles = getStyles(isDarkMode);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -290,30 +294,30 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#111827' : '#f8fafc',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginLeft: 12,
   },
   content: {
     flex: 1,
   },
   section: {
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     marginTop: 8,
     paddingVertical: 16,
   },
@@ -327,7 +331,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     paddingHorizontal: 16,
     marginBottom: 12,
   },
@@ -338,7 +342,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
   },
   settingInfo: {
     flexDirection: 'row',
@@ -352,22 +356,22 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   settingDescription: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 2,
   },
   codingDetails: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#111827' : '#f8fafc',
   },
   codingTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginBottom: 8,
   },
   codingNote: {
@@ -388,20 +392,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: isDark ? '#374151' : '#e5e7eb',
   },
   dayText: {
     fontSize: 12,
     fontWeight: '500',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     width: 70,
   },
   timeText: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     flex: 1,
     textAlign: 'center',
   },
@@ -416,7 +420,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
     borderRadius: 8,
     marginBottom: 16,
   },
@@ -431,7 +435,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
   },
   actionText: {
     marginLeft: 12,
@@ -440,11 +444,11 @@ const styles = StyleSheet.create({
   actionTitle: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   actionDescription: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 2,
   },
   aboutItem: {
@@ -460,16 +464,16 @@ const styles = StyleSheet.create({
   aboutTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   aboutVersion: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 2,
   },
   aboutDescription: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 8,
     lineHeight: 16,
   },

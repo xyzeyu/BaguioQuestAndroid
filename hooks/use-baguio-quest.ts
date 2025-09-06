@@ -38,7 +38,7 @@ export const [BaguioQuestProvider, useBaguioQuest] = createContextHook(() => {
     nearbyPOIs: [],
     savedPOIs: [],
     recentSearches: [],
-    popularPOIs: mockPOIs.slice(0, 5),
+    popularPOIs: mockPOIs.slice(0, 8),
     settings: defaultSettings,
     isDarkMode: false,
     hasSeenSplash: false,
@@ -104,7 +104,7 @@ export const [BaguioQuestProvider, useBaguioQuest] = createContextHook(() => {
       ...prev,
       nearbyPOIs: poisWithDistance.slice(0, 10),
       // Update popular POIs with distances too
-      popularPOIs: poisWithDistance.slice(0, 5),
+      popularPOIs: poisWithDistance.slice(0, 8),
     }));
   };
 

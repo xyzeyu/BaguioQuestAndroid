@@ -34,14 +34,15 @@ export default function MapScreen() {
     currentLocation,
     selectedPOI,
     currentRoute,
-
     nearbyPOIs,
     updateLocation,
     selectPOI,
     startNavigation,
-
     findRoute,
+    isDarkMode,
   } = useBaguioQuest();
+
+  const getStyles = (isDark: boolean) => createStyles(isDark);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showLayers, setShowLayers] = useState(false);
@@ -191,6 +192,8 @@ export default function MapScreen() {
       router.push('/navigation' as any);
     }
   };
+
+  const styles = getStyles(isDarkMode);
 
   if (locationPermission === null) {
     return (
@@ -448,10 +451,10 @@ export default function MapScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (isDark: boolean) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#111827' : '#f8fafc',
   },
   loadingContainer: {
     flex: 1,
@@ -460,7 +463,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 16,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
   },
   errorContainer: {
     flex: 1,
@@ -471,13 +474,13 @@ const styles = StyleSheet.create({
   errorTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginTop: 16,
     marginBottom: 8,
   },
   errorText: {
     fontSize: 16,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 24,
@@ -497,15 +500,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
   },
   searchContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    backgroundColor: isDark ? '#374151' : '#f3f4f6',
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 12,
@@ -515,7 +518,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     marginLeft: 8,
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   layersButton: {
     padding: 8,
@@ -526,9 +529,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
   },
   locationStatus: {
     flexDirection: 'row',
@@ -536,7 +539,7 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginLeft: 6,
   },
   offlineIndicator: {
@@ -556,19 +559,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#e5e7eb',
+    backgroundColor: isDark ? '#374151' : '#e5e7eb',
     margin: 16,
     borderRadius: 12,
   },
   mapText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginTop: 8,
   },
   mapSubtext: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 4,
   },
 
@@ -576,7 +579,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     padding: 12,
     borderRadius: 50,
     shadowColor: '#000',
@@ -586,7 +589,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   routePreview: {
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     margin: 16,
     borderRadius: 12,
     padding: 16,
@@ -602,7 +605,7 @@ const styles = StyleSheet.create({
   routeTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginBottom: 8,
   },
   routeStats: {
@@ -612,12 +615,12 @@ const styles = StyleSheet.create({
   },
   routeTime: {
     fontSize: 14,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginLeft: 4,
   },
   routeDistance: {
     fontSize: 14,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
   },
   routeType: {
     fontSize: 12,
@@ -635,7 +638,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-    backgroundColor: '#f8fafc',
+    backgroundColor: isDark ? '#374151' : '#f8fafc',
     borderRadius: 8,
   },
   routeOptionText: {
@@ -644,11 +647,11 @@ const styles = StyleSheet.create({
   routeOptionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   routeOptionDesc: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
   },
   startButton: {
     flexDirection: 'row',
@@ -666,7 +669,7 @@ const styles = StyleSheet.create({
   },
   poisContainer: {
     maxHeight: 200,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     marginHorizontal: 16,
     marginBottom: 16,
     borderRadius: 12,
@@ -679,7 +682,7 @@ const styles = StyleSheet.create({
   poisTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     padding: 16,
     paddingBottom: 8,
   },
@@ -689,13 +692,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
+    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
   },
   poiIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -706,11 +709,11 @@ const styles = StyleSheet.create({
   poiName: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
   },
   poiType: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     marginTop: 2,
   },
   poiHours: {
@@ -720,14 +723,14 @@ const styles = StyleSheet.create({
   },
   poiDistance: {
     fontSize: 12,
-    color: '#6b7280',
+    color: isDark ? '#9ca3af' : '#6b7280',
     fontWeight: '500',
   },
   layersPanel: {
     position: 'absolute',
     top: 120,
     right: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
@@ -740,7 +743,7 @@ const styles = StyleSheet.create({
   layersPanelTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     marginBottom: 12,
   },
   layerItem: {
@@ -748,7 +751,7 @@ const styles = StyleSheet.create({
   },
   layerText: {
     fontSize: 14,
-    color: '#374151',
+    color: isDark ? '#d1d5db' : '#374151',
   },
   openMapsButton: {
     flexDirection: 'row',
@@ -772,7 +775,7 @@ const styles = StyleSheet.create({
   webPOIItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: isDark ? '#1f2937' : '#ffffff',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
@@ -781,7 +784,7 @@ const styles = StyleSheet.create({
   },
   webPOIText: {
     fontSize: 14,
-    color: '#1f2937',
+    color: isDark ? '#f9fafb' : '#1f2937',
     fontWeight: '500',
     flex: 1,
   },
@@ -793,6 +796,6 @@ const styles = StyleSheet.create({
   poiMapsButton: {
     padding: 4,
     borderRadius: 4,
-    backgroundColor: '#eff6ff',
+    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
   },
 });
