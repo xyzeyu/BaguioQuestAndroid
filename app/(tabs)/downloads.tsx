@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   Platform,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -18,6 +19,7 @@ import {
   CheckCircle,
   Clock,
   HardDrive,
+  ExternalLink,
 } from 'lucide-react-native';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 
@@ -107,6 +109,27 @@ export default function DownloadsScreen() {
           onPress: () => {
             console.log(`Starting download for ${area.name}`);
             // Simulate download process
+          }
+        },
+      ]
+    );
+  };
+
+  const handleDownloadOfflineMap = () => {
+    const offlineMapUrl = 'https://download.geofabrik.de/asia/philippines-latest.osm.pbf';
+    
+    Alert.alert(
+      'Download Offline Map',
+      'This will download the complete Baguio City offline map data. The file is approximately 150MB and works without internet connection.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Download', 
+          onPress: () => {
+            Linking.openURL(offlineMapUrl).catch(err => {
+              console.error('Error opening download link:', err);
+              Alert.alert('Error', 'Unable to open download link. Please try again later.');
+            });
           }
         },
       ]
@@ -253,11 +276,36 @@ export default function DownloadsScreen() {
           </View>
         </View>
 
+        {/* Offline Map Download */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Complete Offline Map</Text>
+          <Text style={styles.sectionDescription}>
+            Download the complete Baguio City map for full offline navigation capability.
+          </Text>
+          
+          <TouchableOpacity 
+            style={styles.offlineMapButton}
+            onPress={handleDownloadOfflineMap}
+          >
+            <View style={styles.offlineMapIcon}>
+              <Download size={24} color="#2563eb" />
+            </View>
+            <View style={styles.offlineMapInfo}>
+              <Text style={styles.offlineMapTitle}>Baguio City Complete Map</Text>
+              <Text style={styles.offlineMapDescription}>
+                Full offline map with all roads, landmarks, and POIs
+              </Text>
+              <Text style={styles.offlineMapSize}>~150 MB • Latest Update</Text>
+            </View>
+            <ExternalLink size={20} color="#6b7280" />
+          </TouchableOpacity>
+        </View>
+
         {/* Map Areas */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Available Map Areas</Text>
+          <Text style={styles.sectionTitle}>Map Area Sections</Text>
           <Text style={styles.sectionDescription}>
-            Download map areas for offline navigation. Maps work without internet once downloaded.
+            Download specific areas for faster access and reduced storage usage.
           </Text>
           
           {mapAreas.map(renderMapArea)}
@@ -496,5 +544,45 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#0c4a6e',
     lineHeight: 16,
+  },
+  offlineMapButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    backgroundColor: '#f8fafc',
+    marginHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderStyle: 'dashed',
+  },
+  offlineMapIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#eff6ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  offlineMapInfo: {
+    flex: 1,
+  },
+  offlineMapTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginBottom: 4,
+  },
+  offlineMapDescription: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 4,
+  },
+  offlineMapSize: {
+    fontSize: 12,
+    color: '#2563eb',
+    fontWeight: '500',
   },
 });

@@ -12,6 +12,7 @@ import {
   Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { WebView } from 'react-native-webview';
 import { 
   MapPin, 
   Navigation, 
@@ -264,43 +265,74 @@ export default function MapScreen() {
       {/* Google Maps */}
       <View style={styles.mapContainer}>
         {currentLocation ? (
-          <View style={styles.mapPlaceholder}>
-            <MapPin size={48} color="#2563eb" />
-            <Text style={styles.mapText}>Interactive Map</Text>
-            <Text style={styles.mapSubtext}>
-              Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
-            </Text>
-            
-            <TouchableOpacity 
-              style={styles.openMapsButton}
-              onPress={() => openInGoogleMaps()}
-            >
-              <Navigation size={20} color="#ffffff" />
-              <Text style={styles.openMapsText}>Open in Google Maps</Text>
-            </TouchableOpacity>
-            
-            <View style={styles.webPOIList}>
-              {nearbyPOIs.slice(0, 3).map((poi) => (
-                <TouchableOpacity
-                  key={poi.id}
-                  style={styles.webPOIItem}
-                  onPress={() => handlePOISelect(poi)}
-                >
-                  <MapPin size={16} color="#2563eb" />
-                  <Text style={styles.webPOIText}>{poi.name}</Text>
-                  <TouchableOpacity
-                    style={styles.poiMapsButton}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      openInGoogleMaps(poi);
-                    }}
-                  >
-                    <Navigation size={14} color="#2563eb" />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
+          <WebView
+            style={styles.map}
+            source={{
+              html: `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <style>
+                    body { margin: 0; padding: 0; }
+                    #map { height: 100vh; width: 100%; }
+                  </style>
+                </head>
+                <body>
+                  <div id="map"></div>
+                  <script>
+                    function initMap() {
+                      const userLocation = { lat: ${currentLocation.latitude}, lng: ${currentLocation.longitude} };
+                      const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 15,
+                        center: userLocation,
+                        mapTypeId: 'roadmap'
+                      });
+                      
+                      // Add user location marker
+                      new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        title: 'Your Location',
+                        icon: {
+                          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%232563eb"><circle cx="12" cy="12" r="8" fill="%232563eb" stroke="white" stroke-width="2"/></svg>'),
+                          scaledSize: new google.maps.Size(24, 24)
+                        }
+                      });
+                      
+                      // Add nearby POI markers
+                      const pois = ${JSON.stringify(nearbyPOIs.slice(0, 10))};
+                      pois.forEach(poi => {
+                        const marker = new google.maps.Marker({
+                          position: { lat: poi.lat, lng: poi.lng },
+                          map: map,
+                          title: poi.name,
+                          icon: {
+                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ef4444"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'),
+                            scaledSize: new google.maps.Size(24, 24)
+                          }
+                        });
+                        
+                        const infoWindow = new google.maps.InfoWindow({
+                          content: \`<div><strong>\${poi.name}</strong><br/>\${poi.type}<br/>Distance: \${(poi.distance / 1000).toFixed(1)}km</div>\`
+                        });
+                        
+                        marker.addListener('click', () => {
+                          infoWindow.open(map, marker);
+                        });
+                      });
+                    }
+                  </script>
+                  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO_BcqCGUOdFZE&callback=initMap"></script>
+                </body>
+                </html>
+              `
+            }}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={true}
+            scalesPageToFit={true}
+          />
         ) : (
           <View style={styles.mapPlaceholder}>
             <MapPin size={48} color="#2563eb" />
@@ -376,7 +408,7 @@ export default function MapScreen() {
               )}
             </View>
             <View style={styles.poiActions}>
-              <Text style={styles.poiDistance}>{poi.distance ? (poi.distance < 1000 ? `${Math.round(poi.distance)}m` : `${(poi.distance / 1000).toFixed(1)}km`) : 'N/A'}</Text>
+              <Text style={styles.poiDistance}>{poi.distance ? `${(poi.distance / 1000).toFixed(1)}km` : 'N/A'}</Text>
               <TouchableOpacity
                 style={styles.poiMapsButton}
                 onPress={(e) => {

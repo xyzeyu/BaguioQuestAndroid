@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Search, MapPin, Clock, Star, ArrowLeft, Navigation } from 'lucide-react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI } from '@/types/navigation';
 
@@ -23,16 +23,9 @@ export default function SearchScreen() {
   const [searchQuery, setSearchQuery] = useState(query || '');
   const [searchResults, setSearchResults] = useState<POI[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
-  useEffect(() => {
-    if (searchQuery.trim()) {
-      performSearch(searchQuery);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchQuery]);
-
-  const performSearch = async (query: string) => {
+  const performSearch = React.useCallback(async (query: string) => {
     setIsSearching(true);
     try {
       const results = await searchPOIs(query);
@@ -42,7 +35,28 @@ export default function SearchScreen() {
     } finally {
       setIsSearching(false);
     }
-  };
+  }, [searchPOIs]);
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setShowSearchResults(true);
+      performSearch(searchQuery);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  }, [searchQuery, performSearch]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (query) {
+        setSearchQuery(query);
+        setShowSearchResults(true);
+      }
+    }, [query])
+  );
+
+
 
   const handlePOISelect = (poi: POI) => {
     router.push({
@@ -76,7 +90,8 @@ export default function SearchScreen() {
       return miles < 1 ? `${Math.round(poi.distance * 3.28084)} ft` : `${miles.toFixed(1)} mi`;
     }
     
-    return poi.distance < 1000 ? `${Math.round(poi.distance)}m` : `${(poi.distance / 1000).toFixed(1)}km`;
+    // Always show in kilometers for better readability
+    return `${(poi.distance / 1000).toFixed(1)}km`;
   };
 
   const renderPOI = ({ item }: { item: POI }) => (
@@ -118,12 +133,18 @@ export default function SearchScreen() {
     <SafeAreaView style={styles.container}>
       {/* Search Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <ArrowLeft size={24} color="#1f2937" />
-        </TouchableOpacity>
+        {showSearchResults && (
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => {
+              setSearchQuery('');
+              setShowSearchResults(false);
+              setSearchResults([]);
+            }}
+          >
+            <ArrowLeft size={24} color="#1f2937" />
+          </TouchableOpacity>
+        )}
         <View style={styles.searchContainer}>
           <Search size={20} color="#6b7280" />
           <TextInput
@@ -139,7 +160,7 @@ export default function SearchScreen() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Search Results */}
-        {searchQuery.trim() && (
+        {showSearchResults && searchQuery.trim() && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>
               {isSearching ? 'Searching...' : `Results for "${searchQuery}"`}
@@ -158,7 +179,7 @@ export default function SearchScreen() {
         )}
 
         {/* Recent Searches */}
-        {!searchQuery.trim() && recentSearches.length > 0 && (
+        {!showSearchResults && recentSearches.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Recent Searches</Text>
             {recentSearches.map((search, index) => (
@@ -175,7 +196,7 @@ export default function SearchScreen() {
         )}
 
         {/* Popular Places */}
-        {!searchQuery.trim() && (
+        {!showSearchResults && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Popular Places</Text>
             <FlatList
@@ -188,7 +209,7 @@ export default function SearchScreen() {
         )}
 
         {/* Quick Categories */}
-        {!searchQuery.trim() && (
+        {!showSearchResults && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Categories</Text>
             <View style={styles.categoriesGrid}>
