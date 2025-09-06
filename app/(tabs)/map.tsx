@@ -9,6 +9,7 @@ import {
   Alert,
   Platform,
   Dimensions,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -151,8 +152,27 @@ export default function MapScreen() {
   const handleSearch = () => {
     if (searchQuery.trim()) {
       router.push({
-        pathname: '/search' as any,
+        pathname: '/(tabs)/search' as any,
         params: { query: searchQuery },
+      });
+    }
+  };
+
+  const openInGoogleMaps = (poi?: POI) => {
+    const destination = poi ? `${poi.lat},${poi.lng}` : (currentLocation ? `${currentLocation.latitude},${currentLocation.longitude}` : '16.4023,120.5960');
+    
+    const url = Platform.select({
+      ios: `maps://app?daddr=${destination}`,
+      android: `google.navigation:q=${destination}`,
+      web: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+      default: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+    });
+    
+    if (url) {
+      Linking.openURL(url).catch(err => {
+        console.error('Error opening maps:', err);
+        // Fallback to web version
+        Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${destination}`);
       });
     }
   };
@@ -244,53 +264,43 @@ export default function MapScreen() {
       {/* Google Maps */}
       <View style={styles.mapContainer}>
         {currentLocation ? (
-          Platform.OS === 'web' ? (
-            <View style={styles.mapPlaceholder}>
-              <MapPin size={48} color="#2563eb" />
-              <Text style={styles.mapText}>Interactive Map</Text>
-              <Text style={styles.mapSubtext}>
-                Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
-              </Text>
-              <Text style={styles.webMapNote}>Use mobile app for full map experience</Text>
-              
-              <View style={styles.webPOIList}>
-                {nearbyPOIs.slice(0, 3).map((poi) => (
+          <View style={styles.mapPlaceholder}>
+            <MapPin size={48} color="#2563eb" />
+            <Text style={styles.mapText}>Interactive Map</Text>
+            <Text style={styles.mapSubtext}>
+              Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
+            </Text>
+            
+            <TouchableOpacity 
+              style={styles.openMapsButton}
+              onPress={() => openInGoogleMaps()}
+            >
+              <Navigation size={20} color="#ffffff" />
+              <Text style={styles.openMapsText}>Open in Google Maps</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.webPOIList}>
+              {nearbyPOIs.slice(0, 3).map((poi) => (
+                <TouchableOpacity
+                  key={poi.id}
+                  style={styles.webPOIItem}
+                  onPress={() => handlePOISelect(poi)}
+                >
+                  <MapPin size={16} color="#2563eb" />
+                  <Text style={styles.webPOIText}>{poi.name}</Text>
                   <TouchableOpacity
-                    key={poi.id}
-                    style={styles.webPOIItem}
-                    onPress={() => handlePOISelect(poi)}
+                    style={styles.poiMapsButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      openInGoogleMaps(poi);
+                    }}
                   >
-                    <MapPin size={16} color="#2563eb" />
-                    <Text style={styles.webPOIText}>{poi.name}</Text>
+                    <Navigation size={14} color="#2563eb" />
                   </TouchableOpacity>
-                ))}
-              </View>
+                </TouchableOpacity>
+              ))}
             </View>
-          ) : (
-            <View style={styles.mapContainer}>
-              <View style={styles.mapPlaceholder}>
-                <MapPin size={48} color="#2563eb" />
-                <Text style={styles.mapText}>Interactive Map</Text>
-                <Text style={styles.mapSubtext}>
-                  Lat: {currentLocation.latitude.toFixed(6)}, Lng: {currentLocation.longitude.toFixed(6)}
-                </Text>
-                <Text style={styles.webMapNote}>Native map integration coming soon</Text>
-                
-                <View style={styles.webPOIList}>
-                  {nearbyPOIs.slice(0, 3).map((poi) => (
-                    <TouchableOpacity
-                      key={poi.id}
-                      style={styles.webPOIItem}
-                      onPress={() => handlePOISelect(poi)}
-                    >
-                      <MapPin size={16} color="#2563eb" />
-                      <Text style={styles.webPOIText}>{poi.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </View>
-            </View>
-          )
+          </View>
         ) : (
           <View style={styles.mapPlaceholder}>
             <MapPin size={48} color="#2563eb" />
@@ -365,7 +375,18 @@ export default function MapScreen() {
                 <Text style={styles.poiHours}>{poi.hours}</Text>
               )}
             </View>
-            <Text style={styles.poiDistance}>{poi.distance ? `${poi.distance}m` : 'N/A'}</Text>
+            <View style={styles.poiActions}>
+              <Text style={styles.poiDistance}>{poi.distance ? `${poi.distance}m` : 'N/A'}</Text>
+              <TouchableOpacity
+                style={styles.poiMapsButton}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  openInGoogleMaps(poi);
+                }}
+              >
+                <Navigation size={14} color="#2563eb" />
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -697,11 +718,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#374151',
   },
-  webMapNote: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 8,
-    fontStyle: 'italic',
+  openMapsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2563eb',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 16,
+    gap: 8,
+  },
+  openMapsText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   webPOIList: {
     marginTop: 16,
@@ -715,10 +745,22 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 8,
     gap: 8,
+    justifyContent: 'space-between',
   },
   webPOIText: {
     fontSize: 14,
     color: '#1f2937',
     fontWeight: '500',
+    flex: 1,
+  },
+  poiActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  poiMapsButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: '#eff6ff',
   },
 });

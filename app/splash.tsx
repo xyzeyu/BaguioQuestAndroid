@@ -6,18 +6,23 @@ import {
   TouchableOpacity,
   Animated,
   Dimensions,
+  Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MapPin, Navigation, Route } from 'lucide-react-native';
 import { router } from 'expo-router';
+import * as Location from 'expo-location';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 
 const { width, height } = Dimensions.get('window');
 
 export default function SplashScreen() {
-  const { setSplashSeen, hasAcceptedTerms } = useBaguioQuest();
+  const { setSplashSeen, hasAcceptedTerms, updateLocation } = useBaguioQuest();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(50));
+  const [locationPermissionGranted, setLocationPermissionGranted] = useState<boolean | null>(null);
+  const [isRequestingPermission, setIsRequestingPermission] = useState(false);
 
   useEffect(() => {
     // Start animations
@@ -35,6 +40,52 @@ export default function SplashScreen() {
     ]).start();
   }, []);
 
+  const requestLocationPermission = async () => {
+    setIsRequestingPermission(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      const granted = status === 'granted';
+      setLocationPermissionGranted(granted);
+      
+      if (granted) {
+        // Get initial location
+        try {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Platform.OS === 'web' ? Location.Accuracy.Balanced : Location.Accuracy.High,
+          });
+          
+          updateLocation({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            accuracy: location.coords.accuracy || 0,
+          });
+        } catch (error) {
+          console.log('Could not get initial location:', error);
+          // Use Baguio City center as fallback
+          updateLocation({
+            latitude: 16.4023,
+            longitude: 120.5960,
+            accuracy: 10,
+          });
+        }
+      } else {
+        Alert.alert(
+          'Location Permission Required',
+          'BaguioQuest needs location access to provide accurate navigation and distance calculations. You can still use the app with limited functionality.',
+          [
+            { text: 'Continue Anyway', onPress: handleContinue },
+            { text: 'Grant Permission', onPress: requestLocationPermission },
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error requesting location permission:', error);
+      setLocationPermissionGranted(false);
+    } finally {
+      setIsRequestingPermission(false);
+    }
+  };
+
   const handleContinue = async () => {
     await setSplashSeen();
     
@@ -42,6 +93,14 @@ export default function SplashScreen() {
       router.replace('/(tabs)/map');
     } else {
       router.replace('/terms');
+    }
+  };
+
+  const handleGetStarted = () => {
+    if (locationPermissionGranted === null) {
+      requestLocationPermission();
+    } else {
+      handleContinue();
     }
   };
 
@@ -100,11 +159,31 @@ export default function SplashScreen() {
           </Text>
 
           <TouchableOpacity 
-            style={styles.continueButton}
-            onPress={handleContinue}
+            style={[
+              styles.continueButton,
+              isRequestingPermission && styles.continueButtonDisabled
+            ]}
+            onPress={handleGetStarted}
+            disabled={isRequestingPermission}
           >
-            <Text style={styles.continueButtonText}>Get Started</Text>
+            <Text style={styles.continueButtonText}>
+              {isRequestingPermission 
+                ? 'Requesting Permission...' 
+                : locationPermissionGranted === null 
+                  ? 'Enable Location Access'
+                  : 'Get Started'
+              }
+            </Text>
           </TouchableOpacity>
+
+          {locationPermissionGranted === false && (
+            <TouchableOpacity 
+              style={styles.skipButton}
+              onPress={handleContinue}
+            >
+              <Text style={styles.skipButtonText}>Continue Without Location</Text>
+            </TouchableOpacity>
+          )}
 
           <Text style={styles.versionText}>Version 1.0.0</Text>
         </Animated.View>
@@ -212,6 +291,20 @@ const styles = StyleSheet.create({
     color: '#1e40af',
     fontSize: 18,
     fontWeight: '600',
+  },
+  continueButtonDisabled: {
+    opacity: 0.6,
+  },
+  skipButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    marginBottom: 12,
+  },
+  skipButtonText: {
+    color: '#93c5fd',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   versionText: {
     fontSize: 14,

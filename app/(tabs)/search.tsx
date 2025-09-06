@@ -7,16 +7,18 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Platform,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, MapPin, Clock, Star, ArrowLeft } from 'lucide-react-native';
+import { Search, MapPin, Clock, Star, ArrowLeft, Navigation } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI } from '@/types/navigation';
 
 export default function SearchScreen() {
   const { query } = useLocalSearchParams<{ query?: string }>();
-  const { searchPOIs, recentSearches, popularPOIs } = useBaguioQuest();
+  const { searchPOIs, recentSearches, popularPOIs, currentLocation, settings } = useBaguioQuest();
   
   const [searchQuery, setSearchQuery] = useState(query || '');
   const [searchResults, setSearchResults] = useState<POI[]>([]);
@@ -49,6 +51,34 @@ export default function SearchScreen() {
     });
   };
 
+  const openInGoogleMaps = (poi: POI) => {
+    const url = Platform.select({
+      ios: `maps://app?daddr=${poi.lat},${poi.lng}`,
+      android: `google.navigation:q=${poi.lat},${poi.lng}`,
+      web: `https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`,
+      default: `https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`,
+    });
+    
+    if (url) {
+      Linking.openURL(url).catch(err => {
+        console.error('Error opening maps:', err);
+        // Fallback to web version
+        Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${poi.lat},${poi.lng}`);
+      });
+    }
+  };
+
+  const getDistanceText = (poi: POI) => {
+    if (!currentLocation || !poi.distance) return 'N/A';
+    
+    if (settings.units === 'imperial') {
+      const miles = poi.distance * 0.000621371;
+      return miles < 1 ? `${Math.round(poi.distance * 3.28084)} ft` : `${miles.toFixed(1)} mi`;
+    }
+    
+    return poi.distance < 1000 ? `${Math.round(poi.distance)}m` : `${(poi.distance / 1000).toFixed(1)}km`;
+  };
+
   const renderPOI = ({ item }: { item: POI }) => (
     <TouchableOpacity
       style={styles.poiItem}
@@ -70,7 +100,17 @@ export default function SearchScreen() {
           </View>
         )}
       </View>
-      <Text style={styles.poiDistance}>{item.distance ? `${item.distance}m` : 'N/A'}</Text>
+      <View style={styles.poiActions}>
+        <Text style={styles.poiDistance}>{getDistanceText(item)}</Text>
+        {currentLocation && settings.offlineMode === false && (
+          <TouchableOpacity
+            style={styles.mapsButton}
+            onPress={() => openInGoogleMaps(item)}
+          >
+            <Navigation size={16} color="#2563eb" />
+          </TouchableOpacity>
+        )}
+      </View>
     </TouchableOpacity>
   );
 
@@ -80,7 +120,7 @@ export default function SearchScreen() {
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButton}
-          onPress={() => router.push('/(tabs)/map' as any)}
+          onPress={() => router.back()}
         >
           <ArrowLeft size={24} color="#1f2937" />
         </TouchableOpacity>
@@ -91,7 +131,7 @@ export default function SearchScreen() {
             placeholder="Search places in Baguio..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            autoFocus
+            autoFocus={!!query}
             returnKeyType="search"
           />
         </View>
@@ -269,10 +309,19 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     fontWeight: '500',
   },
+  poiActions: {
+    alignItems: 'flex-end',
+    gap: 8,
+  },
   poiDistance: {
     fontSize: 12,
     color: '#6b7280',
     fontWeight: '500',
+  },
+  mapsButton: {
+    padding: 4,
+    borderRadius: 4,
+    backgroundColor: '#eff6ff',
   },
   noResults: {
     fontSize: 14,

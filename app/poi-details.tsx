@@ -8,7 +8,7 @@ import {
   Image,
   Alert,
   Platform,
-
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
@@ -27,7 +27,6 @@ import {
   ExternalLink,
 } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import * as WebBrowser from 'expo-web-browser';
 
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 import { POI } from '@/types/navigation';
@@ -99,40 +98,24 @@ export default function POIDetailsScreen() {
     );
   };
 
-  const openInGoogleMaps = async () => {
+  const openInGoogleMaps = () => {
     if (!poi) return;
 
-    const query = encodeURIComponent(`${poi.name}, Baguio City`);
-    const coordinates = `${poi.lat},${poi.lng}`;
+    const destination = `${poi.lat},${poi.lng}`;
     
-    let url: string;
+    const url = Platform.select({
+      ios: `maps://app?daddr=${destination}`,
+      android: `google.navigation:q=${destination}`,
+      web: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+      default: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+    });
     
-    if (Platform.OS === 'ios') {
-      // Try to open in Google Maps app first, fallback to Apple Maps
-      url = `comgooglemaps://?q=${query}&center=${coordinates}&zoom=15`;
-      
-      try {
-        await WebBrowser.openBrowserAsync(url);
-      } catch {
-        // Fallback to Apple Maps
-        const appleMapsUrl = `http://maps.apple.com/?q=${query}&ll=${coordinates}&z=15`;
-        await WebBrowser.openBrowserAsync(appleMapsUrl);
-      }
-    } else if (Platform.OS === 'android') {
-      // Android - try Google Maps app first
-      url = `geo:${coordinates}?q=${query}`;
-      
-      try {
-        await WebBrowser.openBrowserAsync(url);
-      } catch {
+    if (url) {
+      Linking.openURL(url).catch(err => {
+        console.error('Error opening maps:', err);
         // Fallback to web version
-        const webUrl = `https://www.google.com/maps/search/?api=1&query=${query}&center=${coordinates}&zoom=15`;
-        await WebBrowser.openBrowserAsync(webUrl);
-      }
-    } else {
-      // Web - open Google Maps in browser
-      url = `https://www.google.com/maps/search/?api=1&query=${query}&center=${coordinates}&zoom=15`;
-      await WebBrowser.openBrowserAsync(url);
+        Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${destination}`);
+      });
     }
   };
 
@@ -218,7 +201,14 @@ export default function POIDetailsScreen() {
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <MapPin size={16} color="#6b7280" />
-              <Text style={styles.statText}>{poi.distance ? `${poi.distance}m away` : 'Distance unknown'}</Text>
+              <Text style={styles.statText}>
+              {poi.distance 
+                ? poi.distance < 1000 
+                  ? `${Math.round(poi.distance)}m away`
+                  : `${(poi.distance / 1000).toFixed(1)}km away`
+                : 'Distance unknown'
+              }
+            </Text>
             </View>
             {poi.hours && (
               <View style={styles.statItem}>

@@ -92,17 +92,19 @@ export const [BaguioQuestProvider, useBaguioQuest] = createContextHook(() => {
   const updateNearbyPOIs = (location: Location) => {
     const poisWithDistance = mockPOIs.map(poi => ({
       ...poi,
-      distance: Math.round(calculateDistance(
+      distance: calculateDistance(
         location.latitude,
         location.longitude,
         poi.lat,
         poi.lng
-      )),
+      ),
     })).sort((a, b) => a.distance - b.distance);
 
     setState(prev => ({
       ...prev,
       nearbyPOIs: poisWithDistance.slice(0, 10),
+      // Update popular POIs with distances too
+      popularPOIs: poisWithDistance.slice(0, 5),
     }));
   };
 
@@ -158,13 +160,13 @@ export const [BaguioQuestProvider, useBaguioQuest] = createContextHook(() => {
     if (state.currentLocation) {
       return results.map(poi => ({
         ...poi,
-        distance: Math.round(calculateDistance(
+        distance: calculateDistance(
           state.currentLocation!.latitude,
           state.currentLocation!.longitude,
           poi.lat,
           poi.lng
-        )),
-      }));
+        ),
+      })).sort((a, b) => a.distance - b.distance);
     }
 
     return results;
