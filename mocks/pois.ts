@@ -780,4 +780,100 @@ export const mockPOIs: POI[] = [
     ],
     amenities: ['Ube Halaya', 'Filipino Sweets', 'Traditional Delicacies', 'Local Specialties'],
   },
+  {
+    id: '49',
+    name: 'Shell – Abanao Road',
+    type: 'Gas Station',
+    lat: 16.4050,
+    lng: 120.5930,
+    description: 'A full-service Shell outlet located near Burnham Park—ideal for topping up before or after visiting the city center. Features include a Select convenience store, car wash, and restrooms.',
+    hours: '24 hours',
+    rating: 4.2,
+    photos: [
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Full Service', 'Select Store', 'Car Wash', 'Restrooms', 'Near Burnham Park'],
+  },
+  {
+    id: '50',
+    name: 'Shell – Marcos Highway (KM 4)',
+    type: 'Gas Station',
+    lat: 16.3800,
+    lng: 120.6200,
+    description: 'Conveniently located along Marcos Highway at around KM 4, this Shell station is accessible on the main route into or out of the city.',
+    hours: '24 hours',
+    rating: 4.1,
+    photos: [
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Highway Location', 'Main Route Access', 'Convenient', '24/7 Service'],
+  },
+  {
+    id: '51',
+    name: 'Caltex – Brower Road',
+    type: 'Gas Station',
+    lat: 16.4200,
+    lng: 120.5850,
+    description: 'Situated near the Grand Mosque, this Caltex station is well-placed for those traveling around the city\'s northern or central areas.',
+    hours: '24 hours',
+    rating: 4.0,
+    photos: [
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Near Grand Mosque', 'Northern Area', 'Central Location', 'Well-placed'],
+  },
+  {
+    id: '52',
+    name: 'Caltex – Chanum Street',
+    type: 'Gas Station',
+    lat: 16.4030,
+    lng: 120.5970,
+    description: 'Right across from Igorot Garden and Burnham Park—that makes it a handy stop if you\'re touring downtown Baguio.',
+    hours: '24 hours',
+    rating: 4.3,
+    photos: [
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Near Igorot Garden', 'Near Burnham Park', 'Downtown Location', 'Tourist Area'],
+  },
+  {
+    id: '53',
+    name: 'Petron – Worcester Road',
+    type: 'Gas Station',
+    lat: 16.4100,
+    lng: 120.6100,
+    description: 'Located close to Pine Trees of the World Park, this Petron station is a practical pit stop when you\'re passing through the eastern side of the city.',
+    hours: '24 hours',
+    rating: 4.1,
+    photos: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Near Pine Trees Park', 'Eastern Side', 'Practical Stop', 'Convenient Location'],
+  },
+  {
+    id: '54',
+    name: 'JCQ Gas Station – Kennon Road',
+    type: 'Gas Station',
+    lat: 16.3600,
+    lng: 120.6400,
+    description: 'Found along the Kennon Road route and visible on Waze—it\'s especially convenient for travelers coming from or heading toward La Union and lowland provinces.',
+    hours: '24 hours',
+    rating: 3.9,
+    photos: [
+      'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Kennon Road', 'Waze Visible', 'La Union Route', 'Lowland Access'],
+  },
 ];
