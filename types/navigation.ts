@@ -18,6 +18,7 @@ export interface POI {
   photos?: string[];
   amenities?: string[];
   distance?: number;
+  priceRange?: string;
 }
 
 export interface RouteInfo {
