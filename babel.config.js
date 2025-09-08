@@ -1,11 +1,10 @@
-// babel.config.js
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: ["babel-preset-expo"],
     plugins: [
-      'expo-router/babel', // required for expo-router v5
-      // 'nativewind/babel', // ← keep disabled for now; we'll re-enable later
+      // ...any other plugins
+      "react-native-reanimated/plugin", // 👈 must be LAST
     ],
   };
 };
