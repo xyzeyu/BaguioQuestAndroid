@@ -150,18 +150,18 @@ export const mockPOIs: POI[] = [
   {
     id: '10',
     name: 'Baguio Public Market',
-    type: 'Market',
+    type: 'Shopping',
     lat: 16.4080,
     lng: 120.5970,
-    description: 'A bustling local market selling fresh produce, local crafts, and traditional goods.',
+    description: 'A one-stop haven for the freshest strawberries, Benguet vegetables, a wide array of jams (strawberry, ube, blueberry), peanut brittle, Lengua de Gato, Benguet coffee, local teas, and handcrafted souvenirs such as woven bags, wooden decor, and keychains. Bring an eco-bag—Baguio enforces plastic- and styrofoam-free policies.',
     hours: '6:00 AM - 6:00 PM',
-    rating: 3.8,
+    rating: 4.2,
     photos: [
       'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Local Products', 'Fresh Produce', 'Handicrafts'],
+    amenities: ['Fresh Strawberries', 'Local Jams', 'Handicrafts', 'Benguet Coffee', 'Eco-friendly'],
   },
   {
     id: '11',
@@ -294,10 +294,10 @@ export const mockPOIs: POI[] = [
   {
     id: '19',
     name: 'Good Shepherd Convent',
-    type: 'Tourist Attraction',
+    type: 'Shopping',
     lat: 16.4150,
     lng: 120.5900,
-    description: 'Famous for their ube jam and other local delicacies made by the nuns.',
+    description: 'Famous for creamy ube jam, dragon fruit jam, and strawberry jam—locally loved and highly recommended for quality.',
     hours: '8:00 AM - 11:30 AM, 1:00 PM - 5:00 PM',
     rating: 4.5,
     photos: [
@@ -305,7 +305,7 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Ube Jam', 'Local Delicacies', 'Souvenirs'],
+    amenities: ['Ube Jam', 'Dragon Fruit Jam', 'Strawberry Jam', 'Quality Products'],
   },
   {
     id: '20',
@@ -683,5 +683,101 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&h=600&fit=crop&q=80'
     ],
     amenities: ['Historic (1923)', 'Heritage', 'Charm', 'Upper Session Road'],
+  },
+  {
+    id: '43',
+    name: 'Maharlika Livelihood Center',
+    type: 'Shopping',
+    lat: 16.4100,
+    lng: 120.5930,
+    description: 'A livelihood complex featuring folk art, handicrafts, and woven textiles—perfect for handmade and cultural items.',
+    hours: '9:00 AM - 6:00 PM',
+    rating: 4.0,
+    photos: [
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Folk Art', 'Handicrafts', 'Woven Textiles', 'Cultural Items'],
+  },
+  {
+    id: '44',
+    name: 'Session Road Sunday Market',
+    type: 'Shopping',
+    lat: 16.4040,
+    lng: 120.5950,
+    description: 'On Sundays, Session Road transforms into a lively street market with vendors offering artisanal goods, books, snacks, crafts, and unique souvenirs.',
+    hours: 'Sundays only, 8:00 AM - 6:00 PM',
+    rating: 4.3,
+    photos: [
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Sunday Market', 'Artisanal Goods', 'Books', 'Street Food', 'Unique Souvenirs'],
+  },
+  {
+    id: '45',
+    name: 'Harrison Road Night Market',
+    type: 'Shopping',
+    lat: 16.4020,
+    lng: 120.5980,
+    description: 'Evening strolls here lead to discovering quirky knickknacks, shirts, mugs with Baguio-themed designs, and budget-friendly local products.',
+    hours: '6:00 PM - 11:00 PM',
+    rating: 3.9,
+    photos: [
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Night Market', 'Quirky Items', 'Baguio-themed Products', 'Budget-friendly'],
+  },
+  {
+    id: '46',
+    name: 'Easter Weaving, Inc.',
+    type: 'Shopping',
+    lat: 16.4070,
+    lng: 120.5940,
+    description: 'Specializing in woven apparel and fabrics, showcasing traditional Filipino weaving techniques and modern designs.',
+    hours: '9:00 AM - 6:00 PM',
+    rating: 4.1,
+    photos: [
+      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Woven Apparel', 'Traditional Fabrics', 'Filipino Weaving', 'Modern Designs'],
+  },
+  {
+    id: '47',
+    name: 'Mt. Cloud Bookshop',
+    type: 'Shopping',
+    lat: 16.4050,
+    lng: 120.5960,
+    description: 'A cozy bookshop featuring local reads, literary finds, and books about Philippine culture and history.',
+    hours: '9:00 AM - 7:00 PM',
+    rating: 4.4,
+    photos: [
+      'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Local Books', 'Literary Finds', 'Philippine Culture', 'Cozy Atmosphere'],
+  },
+  {
+    id: '48',
+    name: 'Redzel\'s Baguio',
+    type: 'Shopping',
+    lat: 16.4090,
+    lng: 120.5920,
+    description: 'Known for their delicious ube halaya and other traditional Filipino sweets and delicacies.',
+    hours: '8:00 AM - 8:00 PM',
+    rating: 4.2,
+    photos: [
+      'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop&q=80'
+    ],
+    amenities: ['Ube Halaya', 'Filipino Sweets', 'Traditional Delicacies', 'Local Specialties'],
   },
 ];
