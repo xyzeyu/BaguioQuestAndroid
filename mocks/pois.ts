@@ -4,10 +4,10 @@ export const mockPOIs: POI[] = [
   {
     id: '1',
     name: 'Burnham Park',
-    type: 'Tourist Attraction',
+    type: 'Park',
     lat: 16.4023,
     lng: 120.5960,
-    description: 'A historic urban park in the heart of Baguio City, perfect for boating, picnics, and leisurely walks.',
+    description: 'Often referred to as Baguio\'s "mother of all parks," this iconic 32.84-hectare urban oasis was designed by famed architect Daniel Burnham. Its diverse clusters include the Burnham Lagoon (great for boat rides), Children\'s Playground, Skating Rink, Rose Garden, Orchidarium, and more.',
     hours: '24 hours',
     rating: 4.5,
     photos: [
@@ -15,7 +15,7 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Parking', 'Restrooms', 'Boat Rental'],
+    amenities: ['Burnham Lagoon', 'Boat Rides', 'Children\'s Playground', 'Skating Rink', 'Rose Garden', 'Orchidarium'],
   },
   {
     id: '2',
@@ -52,10 +52,10 @@ export const mockPOIs: POI[] = [
   {
     id: '4',
     name: 'Mines View Park',
-    type: 'Tourist Attraction',
+    type: 'Park',
     lat: 16.4000,
     lng: 120.6100,
-    description: 'A scenic viewpoint offering panoramic views of the mining town of Itogon and the Cordillera mountains.',
+    description: 'A high-elevation lookout offering sweeping views of the Amburayan Valley and the old mining town of Itogon. Visitors often don traditional Cordillera attire for photo ops at the observation deck.',
     hours: '6:00 AM - 6:00 PM',
     rating: 4.1,
     photos: [
@@ -63,15 +63,15 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Parking', 'Souvenir Shops', 'Photo Spots'],
+    amenities: ['Observation Deck', 'Amburayan Valley Views', 'Traditional Cordillera Attire', 'Photo Ops', 'Souvenir Shops'],
   },
   {
     id: '5',
-    name: 'Botanical Garden',
-    type: 'Tourist Attraction',
+    name: 'Baguio Botanical Garden',
+    type: 'Park',
     lat: 16.3950,
     lng: 120.6080,
-    description: 'A beautiful garden showcasing various plant species native to the Cordillera region.',
+    description: 'Nestled between Wright Park and Teacher\'s Camp, this garden offers themed sections featuring dahlia beds, cactus and succulent displays, a Friendship Garden (with global motifs), and even a WWII-era Japanese tunnel.',
     hours: '8:00 AM - 5:00 PM',
     rating: 4.0,
     photos: [
@@ -79,15 +79,15 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1574263867128-a3d5c1b1deaa?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Parking', 'Walking Trails', 'Picnic Areas'],
+    amenities: ['Dahlia Beds', 'Cactus Display', 'Friendship Garden', 'WWII Japanese Tunnel', 'Walking Trails'],
   },
   {
     id: '6',
     name: 'Wright Park',
-    type: 'Tourist Attraction',
+    type: 'Park',
     lat: 16.4120,
     lng: 120.5890,
-    description: 'A popular park known for horseback riding and its proximity to The Mansion.',
+    description: 'Located just across from The Mansion, this serene stretch of greenery is perfect for leisurely walks and horseback riding along a tree-lined reflecting pool. Pony handlers, known as "pony boys," offer rides that are popular with families.',
     hours: '6:00 AM - 6:00 PM',
     rating: 3.9,
     photos: [
@@ -95,7 +95,7 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Parking', 'Horse Riding', 'Restrooms'],
+    amenities: ['Tree-lined Reflecting Pool', 'Pony Boys', 'Horseback Riding', 'Family-friendly', 'Near The Mansion'],
   },
   {
     id: '7',
@@ -118,10 +118,10 @@ export const mockPOIs: POI[] = [
   {
     id: '8',
     name: 'Camp John Hay',
-    type: 'Tourist Attraction',
+    type: 'Park',
     lat: 16.3900,
     lng: 120.6200,
-    description: 'A former US military base turned into a recreational area with golf courses, hotels, and nature trails.',
+    description: 'A vast forested former military base turned recreational zone. Here you\'ll find scenic History Trails, Secret Garden nooks, the whimsical Cemetery of Negativism, golf courses, and relaxing green spaces within a historical and natural setting.',
     hours: '24 hours',
     rating: 4.4,
     photos: [
@@ -129,7 +129,7 @@ export const mockPOIs: POI[] = [
       'https://images.unsplash.com/photo-1574263867128-a3d5c1b1deaa?w=800&h=600&fit=crop&q=80',
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop&q=80'
     ],
-    amenities: ['Golf Course', 'Hotels', 'Restaurants', 'Nature Trails'],
+    amenities: ['History Trails', 'Secret Garden', 'Cemetery of Negativism', 'Golf Courses', 'Forested Area', 'Historical Setting'],
   },
   {
     id: '9',
