@@ -20,7 +20,7 @@ export const mockPOIs: POI[] = [
   {
     id: '2',
     name: 'Baguio Cathedral',
-    type: 'Religious Site',
+    type: 'Tourist Attraction',
     lat: 16.4108,
     lng: 120.5926,
     description: 'Our Lady of the Atonement Cathedral, also known as Baguio Cathedral, is a beautiful pink stone church.',
@@ -36,7 +36,7 @@ export const mockPOIs: POI[] = [
   {
     id: '3',
     name: 'Session Road',
-    type: 'Shopping District',
+    type: 'Tourist Attraction',
     lat: 16.4040,
     lng: 120.5950,
     description: 'The main commercial street of Baguio City, lined with shops, restaurants, and cafes.',
@@ -134,7 +134,7 @@ export const mockPOIs: POI[] = [
   {
     id: '9',
     name: 'The Mansion',
-    type: 'Government Building',
+    type: 'Tourist Attraction',
     lat: 16.4130,
     lng: 120.5880,
     description: 'The official summer residence of the President of the Philippines, featuring beautiful architecture and gardens.',
@@ -214,7 +214,7 @@ export const mockPOIs: POI[] = [
   {
     id: '14',
     name: 'Tam-awan Village',
-    type: 'Cultural Site',
+    type: 'Tourist Attraction',
     lat: 16.4200,
     lng: 120.5700,
     description: 'A recreated traditional Cordillera village showcasing indigenous culture and art.',
@@ -230,7 +230,7 @@ export const mockPOIs: POI[] = [
   {
     id: '15',
     name: 'Bencab Museum',
-    type: 'Museum',
+    type: 'Tourist Attraction',
     lat: 16.3700,
     lng: 120.6400,
     description: 'A contemporary art museum featuring works by National Artist Benedicto Cabrera and other Filipino artists.',
@@ -246,7 +246,7 @@ export const mockPOIs: POI[] = [
   {
     id: '16',
     name: 'Asin Hot Springs',
-    type: 'Natural Attraction',
+    type: 'Tourist Attraction',
     lat: 16.3500,
     lng: 120.6800,
     description: 'Natural hot springs perfect for relaxation with therapeutic mineral waters.',
@@ -278,7 +278,7 @@ export const mockPOIs: POI[] = [
   {
     id: '18',
     name: 'Mirador Jesuit Villa',
-    type: 'Religious Site',
+    type: 'Tourist Attraction',
     lat: 16.4300,
     lng: 120.5600,
     description: 'A peaceful retreat center with beautiful gardens and panoramic views of Baguio.',
@@ -294,7 +294,7 @@ export const mockPOIs: POI[] = [
   {
     id: '19',
     name: 'Good Shepherd Convent',
-    type: 'Shopping',
+    type: 'Tourist Attraction',
     lat: 16.4150,
     lng: 120.5900,
     description: 'Famous for their ube jam and other local delicacies made by the nuns.',
@@ -310,7 +310,7 @@ export const mockPOIs: POI[] = [
   {
     id: '20',
     name: 'Lourdes Grotto',
-    type: 'Religious Site',
+    type: 'Tourist Attraction',
     lat: 16.4250,
     lng: 120.5750,
     description: 'A Catholic pilgrimage site with 252 steps leading to a grotto dedicated to Our Lady of Lourdes.',
@@ -342,7 +342,7 @@ export const mockPOIs: POI[] = [
   {
     id: '22',
     name: 'Diplomat Hotel',
-    type: 'Historic Site',
+    type: 'Tourist Attraction',
     lat: 16.4180,
     lng: 120.5820,
     description: 'A historic and reportedly haunted hotel ruins with a dark past, now a popular tourist attraction.',
