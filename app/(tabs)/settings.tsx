@@ -1,121 +1,83 @@
+// app/settings.tsx
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Switch,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, ScrollView, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Settings as SettingsIcon,
-  Clock,
-  Info,
-  Shield,
-  Download,
-  Bell,
-  Navigation,
-  MapPin,
-  ChevronRight,
-  Moon,
-  Sun,
-} from 'lucide-react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useBaguioQuest } from '@/hooks/use-baguio-quest';
 
-export default function SettingsScreen() {
-  const { 
-    settings, 
-    updateSettings,
-    clearCache,
-    exportData,
-    isDarkMode,
-    toggleDarkMode,
-  } = useBaguioQuest();
+const LOGO_URL =
+  'https://firebasestorage.googleapis.com/v0/b/pinepoint-28ca9.firebasestorage.app/o/BaguioQuest%2Flogo%20no%20bg.png?alt=media&token=4591f271-579f-44ca-9d50-21e4165ad1cc';
 
-  const getStyles = (isDark: boolean) => createStyles(isDark);
+export default function SettingsScreen() {
+  const { settings, updateSettings, clearCache, exportData, isDarkMode, toggleDarkMode } = useBaguioQuest();
+  const styles = createStyles(isDarkMode);
 
   const [codingEnabled, setCodingEnabled] = useState(settings.numberCodingEnabled);
   const [offlineMode, setOfflineMode] = useState(settings.offlineMode);
   const [notifications, setNotifications] = useState(settings.notifications);
 
-  const handleCodingToggle = (value: boolean) => {
-    setCodingEnabled(value);
-    updateSettings({ numberCodingEnabled: value });
+  const handleCodingToggle = (v: boolean) => {
+    setCodingEnabled(v);
+    updateSettings({ numberCodingEnabled: v });
   };
-
-  const handleOfflineToggle = (value: boolean) => {
-    setOfflineMode(value);
-    updateSettings({ offlineMode: value });
+  const handleOfflineToggle = (v: boolean) => {
+    setOfflineMode(v);
+    updateSettings({ offlineMode: v });
   };
-
-  const handleNotificationsToggle = (value: boolean) => {
-    setNotifications(value);
-    updateSettings({ notifications: value });
+  const handleNotificationsToggle = (v: boolean) => {
+    setNotifications(v);
+    updateSettings({ notifications: v });
   };
 
   const showCodingInfo = () => {
     Alert.alert(
       'Number Coding Information',
-      'Default coding windows are based on current LGU regulations. You can override these settings if needed, but always follow official traffic signs and officers.\n\nCoding windows may change - check official announcements regularly.',
+      'Default windows are based on current LGU regulations. Always follow official traffic signs and officers.',
       [{ text: 'OK' }]
     );
   };
 
   const handleClearCache = () => {
-    Alert.alert(
-      'Clear Cache',
-      'This will remove all cached map data and require re-downloading. Continue?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Clear', 
-          style: 'destructive',
-          onPress: () => {
-            clearCache();
-            Alert.alert('Cache Cleared', 'All cached data has been removed.');
-          }
+    Alert.alert('Clear Cache', 'Remove all cached data?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Clear',
+        style: 'destructive',
+        onPress: () => {
+          clearCache();
+          Alert.alert('Cache Cleared', 'All cached data has been removed.');
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const handleExportData = async () => {
     try {
       await exportData();
       Alert.alert('Export Complete', 'Your data has been exported successfully.');
-    } catch (error) {
+    } catch {
       Alert.alert('Export Failed', 'Unable to export data. Please try again.');
     }
   };
 
-  const styles = getStyles(isDarkMode);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <SettingsIcon size={24} color="#2563eb" />
+        <Image source={{ uri: LOGO_URL }} style={styles.logo} />
         <Text style={styles.headerTitle}>Settings</Text>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Appearance Settings */}
+        {/* Appearance */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Appearance</Text>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              {isDarkMode ? (
-                <Moon size={20} color="#6b7280" />
-              ) : (
-                <Sun size={20} color="#6b7280" />
-              )}
+              <Ionicons name={isDarkMode ? 'moon' : 'sunny'} size={20} color="#6b7280" />
               <View style={styles.settingText}>
                 <Text style={styles.settingTitle}>Dark Mode</Text>
-                <Text style={styles.settingDescription}>
-                  Switch between light and dark themes
-                </Text>
+                <Text style={styles.settingDescription}>Switch between light and dark themes</Text>
               </View>
             </View>
             <Switch
@@ -127,18 +89,16 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        {/* Navigation Settings */}
+        {/* Navigation */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Navigation</Text>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <Navigation size={20} color="#6b7280" />
+              <Ionicons name="navigate-outline" size={20} color="#6b7280" />
               <View style={styles.settingText}>
                 <Text style={styles.settingTitle}>Offline Mode</Text>
-                <Text style={styles.settingDescription}>
-                  Use cached maps when no internet connection
-                </Text>
+                <Text style={styles.settingDescription}>Use cached data when offline</Text>
               </View>
             </View>
             <Switch
@@ -151,12 +111,10 @@ export default function SettingsScreen() {
 
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <Bell size={20} color="#6b7280" />
+              <Ionicons name="notifications-outline" size={20} color="#6b7280" />
               <View style={styles.settingText}>
                 <Text style={styles.settingTitle}>Navigation Alerts</Text>
-                <Text style={styles.settingDescription}>
-                  Get notified about traffic and road conditions
-                </Text>
+                <Text style={styles.settingDescription}>Traffic and road condition notifications</Text>
               </View>
             </View>
             <Switch
@@ -173,18 +131,16 @@ export default function SettingsScreen() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Number Coding</Text>
             <TouchableOpacity onPress={showCodingInfo}>
-              <Info size={20} color="#6b7280" />
+              <Ionicons name="information-circle-outline" size={20} color="#6b7280" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <Clock size={20} color="#6b7280" />
+              <Ionicons name="time-outline" size={20} color="#6b7280" />
               <View style={styles.settingText}>
                 <Text style={styles.settingTitle}>Enable Coding Alerts</Text>
-                <Text style={styles.settingDescription}>
-                  Get warnings about number coding restrictions
-                </Text>
+                <Text style={styles.settingDescription}>Get warnings about coding restrictions</Text>
               </View>
             </View>
             <Switch
@@ -199,40 +155,28 @@ export default function SettingsScreen() {
             <View style={styles.codingDetails}>
               <Text style={styles.codingTitle}>Default Coding Windows</Text>
               <Text style={styles.codingNote}>
-                ⚠️ These are default windows. Always check official LGU announcements for current regulations.
+                ⚠️ Defaults only. Always check official LGU announcements.
               </Text>
-              
+
               <View style={styles.codingSchedule}>
-                <View style={styles.codingDay}>
-                  <Text style={styles.dayText}>Monday</Text>
-                  <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
-                  <Text style={styles.plateText}>Ending in 1 & 2</Text>
-                </View>
-                <View style={styles.codingDay}>
-                  <Text style={styles.dayText}>Tuesday</Text>
-                  <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
-                  <Text style={styles.plateText}>Ending in 3 & 4</Text>
-                </View>
-                <View style={styles.codingDay}>
-                  <Text style={styles.dayText}>Wednesday</Text>
-                  <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
-                  <Text style={styles.plateText}>Ending in 5 & 6</Text>
-                </View>
-                <View style={styles.codingDay}>
-                  <Text style={styles.dayText}>Thursday</Text>
-                  <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
-                  <Text style={styles.plateText}>Ending in 7 & 8</Text>
-                </View>
-                <View style={styles.codingDay}>
-                  <Text style={styles.dayText}>Friday</Text>
-                  <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
-                  <Text style={styles.plateText}>Ending in 9 & 0</Text>
-                </View>
+                {[
+                  { day: 'Monday', plate: '1 & 2' },
+                  { day: 'Tuesday', plate: '3 & 4' },
+                  { day: 'Wednesday', plate: '5 & 6' },
+                  { day: 'Thursday', plate: '7 & 8' },
+                  { day: 'Friday', plate: '9 & 0' },
+                ].map((d) => (
+                  <View key={d.day} style={styles.codingDay}>
+                    <Text style={styles.dayText}>{d.day}</Text>
+                    <Text style={styles.timeText}>7:00 AM - 7:00 PM</Text>
+                    <Text style={styles.plateText}>Ending in {d.plate}</Text>
+                  </View>
+                ))}
               </View>
 
               <TouchableOpacity style={styles.customizeButton}>
                 <Text style={styles.customizeButtonText}>Customize Windows</Text>
-                <ChevronRight size={16} color="#2563eb" />
+                <Ionicons name="chevron-forward" size={16} color="#2563eb" />
               </TouchableOpacity>
             </View>
           )}
@@ -241,36 +185,32 @@ export default function SettingsScreen() {
         {/* Data & Storage */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Data & Storage</Text>
-          
+
           <TouchableOpacity style={styles.actionItem} onPress={handleClearCache}>
-            <Download size={20} color="#6b7280" />
+            <Ionicons name="download-outline" size={20} color="#6b7280" />
             <View style={styles.actionText}>
               <Text style={styles.actionTitle}>Clear Cache</Text>
-              <Text style={styles.actionDescription}>
-                Remove downloaded maps and cached data
-              </Text>
+              <Text style={styles.actionDescription}>Remove downloaded data</Text>
             </View>
-            <ChevronRight size={16} color="#6b7280" />
+            <Ionicons name="chevron-forward" size={16} color="#6b7280" />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionItem} onPress={handleExportData}>
-            <Shield size={20} color="#6b7280" />
+            <Ionicons name="shield-checkmark-outline" size={20} color="#6b7280" />
             <View style={styles.actionText}>
               <Text style={styles.actionTitle}>Export Data</Text>
-              <Text style={styles.actionDescription}>
-                Backup your saved places and settings
-              </Text>
+              <Text style={styles.actionDescription}>Backup saved places & settings</Text>
             </View>
-            <ChevronRight size={16} color="#6b7280" />
+            <Ionicons name="chevron-forward" size={16} color="#6b7280" />
           </TouchableOpacity>
         </View>
 
         {/* About */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
-          
+
           <View style={styles.aboutItem}>
-            <MapPin size={20} color="#2563eb" />
+            <Ionicons name="location-sharp" size={20} color="#2563eb" />
             <View style={styles.aboutText}>
               <Text style={styles.aboutTitle}>BaguioQuest</Text>
               <Text style={styles.aboutVersion}>Version 1.0.0</Text>
@@ -283,9 +223,7 @@ export default function SettingsScreen() {
           <View style={styles.disclaimer}>
             <Text style={styles.disclaimerTitle}>⚠️ Important Disclaimer</Text>
             <Text style={styles.disclaimerText}>
-              BaguioQuest provides informational guidance only. Always follow official traffic signs, 
-              signals, and law enforcement officers. Traffic rules and road conditions may change 
-              without notice. Drive safely and responsibly.
+              Informational guidance only. Always follow official signs and officers. Conditions may change without notice.
             </Text>
           </View>
         </View>
@@ -294,206 +232,88 @@ export default function SettingsScreen() {
   );
 }
 
-const createStyles = (isDark: boolean) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: isDark ? '#111827' : '#f8fafc',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginLeft: 12,
-  },
-  content: {
-    flex: 1,
-  },
-  section: {
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    marginTop: 8,
-    paddingVertical: 16,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    paddingHorizontal: 16,
-    marginBottom: 12,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
-  },
-  settingInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  settingDescription: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 2,
-  },
-  codingDetails: {
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    backgroundColor: isDark ? '#111827' : '#f8fafc',
-  },
-  codingTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginBottom: 8,
-  },
-  codingNote: {
-    fontSize: 12,
-    color: '#f59e0b',
-    backgroundColor: '#fffbeb',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 16,
-  },
-  codingSchedule: {
-    gap: 8,
-    marginBottom: 16,
-  },
-  codingDay: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: isDark ? '#374151' : '#e5e7eb',
-  },
-  dayText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    width: 70,
-  },
-  timeText: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    flex: 1,
-    textAlign: 'center',
-  },
-  plateText: {
-    fontSize: 12,
-    color: '#ef4444',
-    fontWeight: '500',
-  },
-  customizeButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  customizeButtonText: {
-    fontSize: 14,
-    color: '#2563eb',
-    fontWeight: '500',
-  },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
-  },
-  actionText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  actionTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  actionDescription: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 2,
-  },
-  aboutItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-  },
-  aboutText: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  aboutTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  aboutVersion: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 2,
-  },
-  aboutDescription: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 8,
-    lineHeight: 16,
-  },
-  disclaimer: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: '#fef2f2',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#fecaca',
-  },
-  disclaimerTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#dc2626',
-    marginBottom: 8,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: '#7f1d1d',
-    lineHeight: 16,
-  },
-});
+const createStyles = (dark: boolean) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: dark ? '#000' : '#f8fafc' },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: dark ? '#000' : '#fff',
+      borderBottomWidth: 1,
+      borderBottomColor: dark ? '#1f1f1f' : '#e5e7eb',
+    },
+    logo: { width: 24, height: 24, marginRight: 8 },
+    headerTitle: { fontSize: 20, fontWeight: '600', color: dark ? '#fff' : '#1f2937' },
+    content: { flex: 1 },
+    section: { backgroundColor: dark ? '#000' : '#fff', marginTop: 8, paddingVertical: 16 },
+    sectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      marginBottom: 12,
+    },
+    sectionTitle: { fontSize: 16, fontWeight: '600', color: dark ? '#fff' : '#1f2937', paddingHorizontal: 16, marginBottom: 12 },
+    settingItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: dark ? '#1f1f1f' : '#f3f4f6',
+    },
+    settingInfo: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+    settingText: { marginLeft: 12, flex: 1 },
+    settingTitle: { fontSize: 14, fontWeight: '500', color: dark ? '#fff' : '#1f2937' },
+    settingDescription: { fontSize: 12, color: dark ? '#9ca3af' : '#6b7280', marginTop: 2 },
+    codingDetails: { paddingHorizontal: 16, paddingTop: 16, backgroundColor: dark ? '#050505' : '#f8fafc' },
+    codingTitle: { fontSize: 14, fontWeight: '600', color: dark ? '#fff' : '#1f2937', marginBottom: 8 },
+    codingNote: { fontSize: 12, color: '#f59e0b', backgroundColor: '#fffbeb', padding: 8, borderRadius: 6, marginBottom: 16 },
+    codingSchedule: { gap: 8, marginBottom: 16 },
+    codingDay: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      backgroundColor: dark ? '#000' : '#fff',
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: dark ? '#1f1f1f' : '#e5e7eb',
+    },
+    dayText: { fontSize: 12, fontWeight: '500', color: dark ? '#fff' : '#1f2937', width: 70 },
+    timeText: { fontSize: 12, color: dark ? '#9ca3af' : '#6b7280', flex: 1, textAlign: 'center' },
+    plateText: { fontSize: 12, color: '#ef4444', fontWeight: '500' },
+    customizeButton: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      backgroundColor: dark ? '#0b2a6f' : '#eff6ff',
+      borderRadius: 8,
+      marginBottom: 16,
+    },
+    customizeButtonText: { fontSize: 14, color: '#2563eb', fontWeight: '500' },
+    actionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: dark ? '#1f1f1f' : '#f3f4f6',
+    },
+    actionText: { marginLeft: 12, flex: 1 },
+    actionTitle: { fontSize: 14, fontWeight: '500', color: dark ? '#fff' : '#1f2937' },
+    actionDescription: { fontSize: 12, color: dark ? '#9ca3af' : '#6b7280', marginTop: 2 },
+    aboutItem: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16, paddingVertical: 12 },
+    aboutText: { marginLeft: 12, flex: 1 },
+    aboutTitle: { fontSize: 16, fontWeight: '600', color: dark ? '#fff' : '#1f2937' },
+    aboutVersion: { fontSize: 12, color: dark ? '#9ca3af' : '#6b7280', marginTop: 2 },
+    aboutDescription: { fontSize: 12, color: dark ? '#9ca3af' : '#6b7280', marginTop: 8, lineHeight: 16 },
+    disclaimer: { margin: 16, padding: 16, backgroundColor: '#fef2f2', borderRadius: 8, borderWidth: 1, borderColor: '#fecaca' },
+    disclaimerTitle: { fontSize: 14, fontWeight: '600', color: '#dc2626', marginBottom: 8 },
+    disclaimerText: { fontSize: 12, color: '#7f1d1d', lineHeight: 16 },
+  });

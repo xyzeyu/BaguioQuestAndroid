@@ -1,63 +1,32 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// app/_layout.tsx
 import { Stack } from "expo-router";
+import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BaguioQuestProvider, useBaguioQuest } from "@/hooks/use-baguio-quest";
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// Use RELATIVE import to avoid alias issues while debugging
+import { BaguioQuestProvider } from "../hooks/use-baguio-quest";
 
 const queryClient = new QueryClient();
 
-function RootLayoutNav() {
-  return (
-    <Stack screenOptions={{ headerBackTitle: "Back" }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="splash" options={{ headerShown: false }} />
-      <Stack.Screen name="terms" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen 
-        name="navigation" 
-        options={{ 
-          headerShown: false,
-          presentation: "fullScreenModal",
-        }} 
-      />
-      <Stack.Screen 
-        name="poi-details" 
-        options={{ 
-          headerShown: false,
-          presentation: "modal",
-        }} 
-      />
-      <Stack.Screen 
-        name="modal" 
-        options={{ 
-          presentation: "modal",
-          headerShown: false,
-        }} 
-      />
-    </Stack>
-  );
-}
-
 export default function RootLayout() {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 100);
-    
-    return () => clearTimeout(timer);
+    // Don’t block the UI; if there’s an error we’ll see it
+    SplashScreen.hideAsync().catch(() => {});
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BaguioQuestProvider>
+    <BaguioQuestProvider>
+      <QueryClientProvider client={queryClient}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <RootLayoutNav />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="splash" />
+            <Stack.Screen name="terms" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
         </GestureHandlerRootView>
-      </BaguioQuestProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </BaguioQuestProvider>
   );
 }

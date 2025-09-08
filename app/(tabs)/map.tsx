@@ -1,801 +1,299 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Alert,
-  Platform,
-  Dimensions,
-  Linking,
-} from 'react-native';
+// app/(tabs)/map.tsx
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WebView } from 'react-native-webview';
-import { 
-  MapPin, 
-  Navigation, 
-  Layers, 
-  Search,
-  Target,
-  Clock,
-  Route,
-  AlertTriangle,
-} from 'lucide-react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
-import { useBaguioQuest } from '@/hooks/use-baguio-quest';
-import { POI } from '@/types/navigation';
+import { useBaguioQuest } from '../../hooks/use-baguio-quest';
+import type { POI } from '../../types/navigation';
+import { calculateDistanceMeters } from '../../utils/navigation';
 
 export default function MapScreen() {
-  const {
-    currentLocation,
-    selectedPOI,
-    currentRoute,
-    nearbyPOIs,
-    updateLocation,
-    selectPOI,
-    startNavigation,
-    findRoute,
-    isDarkMode,
-  } = useBaguioQuest();
+  const { currentLocation, nearbyPOIs, updateLocation, isDarkMode } = useBaguioQuest();
 
-  const getStyles = (isDark: boolean) => createStyles(isDark);
+  const dark = !!isDarkMode;
+  const styles = createStyles(dark);
+  const mapRef = useRef<MapView | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [showLayers, setShowLayers] = useState(false);
   const [locationPermission, setLocationPermission] = useState<boolean | null>(null);
+
+  const initialRegion: Region = {
+    latitude: 16.4023,
+    longitude: 120.5960,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  };
+
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({
+    lat: initialRegion.latitude,
+    lng: initialRegion.longitude,
+  });
+
+  const formatDistance = (meters?: number) => {
+    if (typeof meters !== 'number') return 'N/A';
+    if (meters < 1000) return `${Math.round(meters)} m`;
+    return `${(meters / 1000).toFixed(1)} km`;
+  };
 
   const requestLocationPermission = useCallback(async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      setLocationPermission(status === 'granted');
-      
-      if (status === 'granted') {
-        startLocationTracking();
-      } else {
-        Alert.alert(
-          'Location Permission Required',
-          'BaguioQuest needs location access to provide navigation guidance.',
-          [{ text: 'OK' }]
+      const granted = status === 'granted';
+      setLocationPermission(granted);
+      if (!granted) {
+        Alert.alert('Location Permission Required', 'BaguioQuest needs location access to show your position.', [{ text: 'OK' }]);
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({
+        accuracy: Platform.OS === 'web' ? Location.Accuracy.Balanced : Location.Accuracy.High,
+      });
+
+      const lat = loc.coords.latitude;
+      const lng = loc.coords.longitude;
+      const acc = loc.coords.accuracy ?? 0;
+
+      updateLocation({ latitude: lat, longitude: lng, accuracy: acc });
+
+      requestAnimationFrame(() => {
+        mapRef.current?.animateToRegion({ latitude: lat, longitude: lng, latitudeDelta: 0.02, longitudeDelta: 0.02 }, 600);
+      });
+
+      if (Platform.OS !== 'web') {
+        await Location.watchPositionAsync(
+          { accuracy: Location.Accuracy.High, timeInterval: 5000, distanceInterval: 10 },
+          (loc2) => {
+            const lt = loc2.coords.latitude;
+            const lg = loc2.coords.longitude;
+            const ac = loc2.coords.accuracy ?? 0;
+            updateLocation({ latitude: lt, longitude: lg, accuracy: ac });
+          }
         );
       }
-    } catch (error) {
-      console.error('Error requesting location permission:', error);
+    } catch (e) {
+      console.error('permission/location error', e);
       setLocationPermission(false);
     }
-  }, []);
+  }, [updateLocation]);
 
   useEffect(() => {
     requestLocationPermission();
   }, [requestLocationPermission]);
 
-  const useDemoLocation = () => {
-    // Use Baguio City center as demo location
-    const demoLocation = {
-      latitude: 16.4023,
-      longitude: 120.5960,
-      accuracy: 10,
-    };
-    
-    console.log('Using demo location:', demoLocation);
-    updateLocation(demoLocation);
-  };
+  const hasCoords = (p: POI): p is POI & { lat: number; lng: number } =>
+    typeof (p as any).lat === 'number' && typeof (p as any).lng === 'number';
 
-  const startLocationTracking = async () => {
-    try {
-      console.log('Starting location tracking...');
-      
-      // First try to get current position with more permissive settings
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Platform.OS === 'web' ? Location.Accuracy.Balanced : Location.Accuracy.High,
-      });
-      
-      console.log('Got location:', location.coords);
-      
-      updateLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        accuracy: location.coords.accuracy || 0,
-      });
+  const poisWithCoords = useMemo(
+    () => nearbyPOIs.filter(hasCoords) as Array<POI & { lat: number; lng: number; distanceMeters?: number }>,
+    [nearbyPOIs]
+  );
 
-      // Start watching position changes (not supported on web)
-      if (Platform.OS !== 'web') {
-        Location.watchPositionAsync(
-          {
-            accuracy: Location.Accuracy.High,
-            timeInterval: 5000,
-            distanceInterval: 10,
-          },
-          (location) => {
-            console.log('Location updated:', location.coords);
-            updateLocation({
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-              accuracy: location.coords.accuracy || 0,
-            });
-          }
-        );
-      }
-    } catch (error: any) {
-      console.error('Error getting location:', {
-        message: error.message,
-        code: error.code,
-        error: error
-      });
-      
-      // Show user-friendly error message based on error type
-      let errorMessage = 'Unable to get your location. ';
-      
-      if (error.code === 1) {
-        errorMessage += 'Location access was denied. Please enable location permissions in your device settings.';
-      } else if (error.code === 2) {
-        errorMessage += 'Location is currently unavailable. Please check your GPS/network connection.';
-      } else if (error.code === 3) {
-        errorMessage += 'Location request timed out. Please try again.';
-      } else {
-        errorMessage += 'Please check your location settings and try again.';
-      }
-      
-      Alert.alert(
-        'Location Error',
-        errorMessage,
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Use Demo Location', onPress: useDemoLocation },
-          { text: 'Retry', onPress: startLocationTracking }
-        ]
-      );
-    }
-  };
+  const poisWithDistanceFromMap = useMemo(() => {
+    return poisWithCoords
+      .map((p) => ({
+        ...p,
+        distanceMeters: calculateDistanceMeters(mapCenter.lat, mapCenter.lng, p.lat, p.lng),
+      }))
+      .sort((a, b) => (a.distanceMeters ?? Infinity) - (b.distanceMeters ?? Infinity));
+  }, [poisWithCoords, mapCenter]);
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      router.push({
-        pathname: '/(tabs)/search' as any,
-        params: { query: searchQuery },
-      });
-    }
-  };
-
-  const openInGoogleMaps = (poi?: POI) => {
-    const destination = poi ? `${poi.lat},${poi.lng}` : (currentLocation ? `${currentLocation.latitude},${currentLocation.longitude}` : '16.4023,120.5960');
-    
-    const url = Platform.select({
-      ios: `maps://app?daddr=${destination}`,
-      android: `google.navigation:q=${destination}`,
-      web: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
-      default: `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
-    });
-    
-    if (url) {
-      Linking.openURL(url).catch(err => {
-        console.error('Error opening maps:', err);
-        // Fallback to web version
-        Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${destination}`);
-      });
-    }
-  };
-
-  const handlePOISelect = (poi: POI) => {
-    selectPOI(poi);
-    if (currentLocation) {
-      findRoute(currentLocation, { latitude: poi.lat, longitude: poi.lng });
-    }
-  };
-
-  const handleStartNavigation = () => {
-    if (currentRoute && selectedPOI) {
-      startNavigation();
-      router.push('/navigation' as any);
-    }
-  };
-
-  const styles = getStyles(isDarkMode);
-
-  if (locationPermission === null) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Requesting location permission...</Text>
-        </View>
-      </SafeAreaView>
+  const centerOnUser = () => {
+    if (!currentLocation) return;
+    mapRef.current?.animateToRegion(
+      {
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
+      },
+      600
     );
-  }
+  };
 
-  if (locationPermission === false) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.errorContainer}>
-          <AlertTriangle size={48} color="#ef4444" />
-          <Text style={styles.errorTitle}>Location Access Required</Text>
-          <Text style={styles.errorText}>
-            BaguioQuest needs location access to provide navigation guidance.
-            Please enable location permissions in your device settings.
-          </Text>
-          <TouchableOpacity 
-            style={styles.retryButton}
-            onPress={requestLocationPermission}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  const openDetails = (poi: POI) => {
+    router.push({ pathname: '/poi-details', params: { poiId: poi.id } });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Search Header */}
+      {/* Header / Search */}
       <View style={styles.header}>
         <View style={styles.searchContainer}>
-          <Search size={20} color="#6b7280" />
+          <Ionicons name="search-outline" size={20} color="#6b7280" />
           <TextInput
             style={styles.searchInput}
             placeholder="Where to? Session Rd, Burnham Park..."
+            placeholderTextColor={dark ? '#9ca3af' : '#6b7280'}
             value={searchQuery}
             onChangeText={setSearchQuery}
-            onSubmitEditing={handleSearch}
+            onSubmitEditing={() => router.push({ pathname: '/search', params: { q: searchQuery } })}
             returnKeyType="search"
           />
         </View>
-        <TouchableOpacity 
-          style={styles.layersButton}
-          onPress={() => setShowLayers(!showLayers)}
-        >
-          <Layers size={24} color="#2563eb" />
-        </TouchableOpacity>
       </View>
 
-      {/* Location Status */}
-      <View style={styles.statusBar}>
-        <View style={styles.locationStatus}>
-          <Target size={16} color={currentLocation ? "#10b981" : "#ef4444"} />
-          <Text style={styles.statusText}>
-            {currentLocation 
-              ? `GPS: ${currentLocation.accuracy?.toFixed(0)}m accuracy`
-              : 'Searching for GPS...'
-            }
-          </Text>
+      {/* Permission state */}
+      {locationPermission === null && (
+        <View style={styles.stateBox}>
+          <Text style={styles.stateText}>Requesting location permission…</Text>
         </View>
-        {Platform.OS !== 'web' && (
-          <Text style={styles.offlineIndicator}>📶 Offline Ready</Text>
-        )}
-      </View>
-
-      {/* Google Maps */}
-      <View style={styles.mapContainer}>
-        {currentLocation ? (
-          <WebView
-            style={styles.map}
-            source={{
-              html: `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <style>
-                    body { margin: 0; padding: 0; }
-                    #map { height: 100vh; width: 100%; }
-                  </style>
-                </head>
-                <body>
-                  <div id="map"></div>
-                  <script>
-                    function initMap() {
-                      const userLocation = { lat: ${currentLocation.latitude}, lng: ${currentLocation.longitude} };
-                      const map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 15,
-                        center: userLocation,
-                        mapTypeId: 'roadmap'
-                      });
-                      
-                      // Add user location marker
-                      new google.maps.Marker({
-                        position: userLocation,
-                        map: map,
-                        title: 'Your Location',
-                        icon: {
-                          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%232563eb"><circle cx="12" cy="12" r="8" fill="%232563eb" stroke="white" stroke-width="2"/></svg>'),
-                          scaledSize: new google.maps.Size(24, 24)
-                        }
-                      });
-                      
-                      // Add nearby POI markers
-                      const pois = ${JSON.stringify(nearbyPOIs.slice(0, 10))};
-                      pois.forEach(poi => {
-                        const marker = new google.maps.Marker({
-                          position: { lat: poi.lat, lng: poi.lng },
-                          map: map,
-                          title: poi.name,
-                          icon: {
-                            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ef4444"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'),
-                            scaledSize: new google.maps.Size(24, 24)
-                          }
-                        });
-                        
-                        const infoWindow = new google.maps.InfoWindow({
-                          content: \`<div><strong>\${poi.name}</strong><br/>\${poi.type}<br/>Distance: \${(poi.distance / 1000).toFixed(1)}km</div>\`
-                        });
-                        
-                        marker.addListener('click', () => {
-                          infoWindow.open(map, marker);
-                        });
-                      });
-                    }
-                  </script>
-                  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dO_BcqCGUOdFZE&callback=initMap"></script>
-                </body>
-                </html>
-              `
-            }}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={true}
-            scalesPageToFit={true}
-          />
-        ) : (
-          <View style={styles.mapPlaceholder}>
-            <MapPin size={48} color="#2563eb" />
-            <Text style={styles.mapText}>Loading Map...</Text>
-            <Text style={styles.mapSubtext}>Waiting for location...</Text>
-          </View>
-        )}
-
-        {/* My Location Button */}
-        <TouchableOpacity 
-          style={styles.myLocationButton}
-          onPress={startLocationTracking}
-        >
-          <Navigation size={24} color="#2563eb" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Route Preview */}
-      {currentRoute && selectedPOI && (
-        <View style={styles.routePreview}>
-          <View style={styles.routeHeader}>
-            <Text style={styles.routeTitle}>
-              To: {selectedPOI.name}
-            </Text>
-            <View style={styles.routeStats}>
-              <Clock size={16} color="#6b7280" />
-              <Text style={styles.routeTime}>{currentRoute.duration} min</Text>
-              <Text style={styles.routeDistance}>{currentRoute.distance} km</Text>
-              <Text style={styles.routeType}>Main Roads</Text>
-            </View>
-          </View>
-          
-          <View style={styles.routeOptions}>
-            <TouchableOpacity 
-              style={styles.routeOption}
-              onPress={handleStartNavigation}
-            >
-              <Route size={20} color="#2563eb" />
-              <View style={styles.routeOptionText}>
-                <Text style={styles.routeOptionTitle}>Main-First Route</Text>
-                <Text style={styles.routeOptionDesc}>Fewer turns • Avoids alleys</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity 
-            style={styles.startButton}
-            onPress={handleStartNavigation}
+      )}
+      {locationPermission === false && (
+        <View style={styles.stateBox}>
+          <Ionicons name="warning-outline" size={24} color="#ef4444" />
+          <Text style={styles.stateText}>Location access needed. Enable in Settings, then tap “Retry”.</Text>
+          <TouchableOpacity style={styles.primaryBtn} onPress={requestLocationPermission}>
+            <Text style={styles.primaryBtnText}>Retry</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.primaryBtn, { backgroundColor: dark ? '#111827' : '#e5e7eb' }]}
+            onPress={() => updateLocation({ latitude: 16.4023, longitude: 120.5960, accuracy: 10 })}
           >
-            <Navigation size={20} color="#ffffff" />
-            <Text style={styles.startButtonText}>Start Navigation</Text>
+            <Text style={[styles.primaryBtnText, { color: dark ? '#f9fafb' : '#111827' }]}>Use Demo Location</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      {/* Nearby POIs */}
-      <ScrollView style={styles.poisContainer} showsVerticalScrollIndicator={false}>
-        <Text style={styles.poisTitle}>Nearby Places</Text>
-        {nearbyPOIs.map((poi) => (
-          <TouchableOpacity
-            key={poi.id}
-            style={styles.poiItem}
-            onPress={() => handlePOISelect(poi)}
-          >
+      {/* Map */}
+      <View style={{ flex: 1 }}>
+        <MapView
+          ref={mapRef}
+          style={{ flex: 1 }}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={initialRegion}
+          showsUserLocation
+          showsMyLocationButton={false}
+          onRegionChangeComplete={(r) => setMapCenter({ lat: r.latitude, lng: r.longitude })}
+          scrollEnabled
+          zoomEnabled
+          rotateEnabled
+          pitchEnabled
+        >
+          {poisWithCoords.map((poi) => (
+            <Marker
+              key={poi.id}
+              coordinate={{ latitude: poi.lat, longitude: poi.lng }}
+              title={poi.name}
+              description={poi.type}
+              onPress={() => openDetails(poi)}
+            />
+          ))}
+        </MapView>
+
+        {/* Center on user */}
+        <TouchableOpacity style={styles.myLocationButton} onPress={centerOnUser}>
+          <Ionicons name="navigate-outline" size={24} color="#2563eb" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Nearby POIs — distance from MAP center */}
+      <ScrollView style={styles.pois} keyboardShouldPersistTaps="handled">
+        <Text style={styles.poisTitle}>Nearby Places (from map center)</Text>
+        {poisWithDistanceFromMap.map((poi) => (
+          <TouchableOpacity key={poi.id} style={styles.poiItem} onPress={() => openDetails(poi)}>
             <View style={styles.poiIcon}>
-              <MapPin size={20} color="#2563eb" />
+              <Ionicons name="location-outline" size={18} color="#2563eb" />
             </View>
-            <View style={styles.poiInfo}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.poiName}>{poi.name}</Text>
               <Text style={styles.poiType}>{poi.type}</Text>
-              {poi.hours && (
-                <Text style={styles.poiHours}>{poi.hours}</Text>
-              )}
+              {(poi as any).hours ? <Text style={{ color: '#10b981', fontSize: 12 }}>{(poi as any).hours}</Text> : null}
             </View>
-            <View style={styles.poiActions}>
-              <Text style={styles.poiDistance}>{poi.distance ? `${(poi.distance / 1000).toFixed(1)}km` : 'N/A'}</Text>
-              <TouchableOpacity
-                style={styles.poiMapsButton}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  openInGoogleMaps(poi);
-                }}
-              >
-                <Navigation size={14} color="#2563eb" />
-              </TouchableOpacity>
-            </View>
+            <Text style={styles.poiDistance}>{formatDistance(poi.distanceMeters)}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      {/* Layers Panel */}
-      {showLayers && (
-        <View style={styles.layersPanel}>
-          <Text style={styles.layersPanelTitle}>Map Layers</Text>
-          <TouchableOpacity style={styles.layerItem}>
-            <Text style={styles.layerText}>🛣️ Main Roads</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.layerItem}>
-            <Text style={styles.layerText}>↪️ One-Way Streets</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.layerItem}>
-            <Text style={styles.layerText}>⛰️ Slope Hints</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.layerItem}>
-            <Text style={styles.layerText}>🅿️ Parking</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.layerItem}>
-            <Text style={styles.layerText}>🚻 Restrooms</Text>
-          </TouchableOpacity>
-        </View>
-      )}
     </SafeAreaView>
   );
 }
 
-const createStyles = (isDark: boolean) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: isDark ? '#111827' : '#f8fafc',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: isDark ? '#9ca3af' : '#6b7280',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  errorText: {
-    fontSize: 16,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    textAlign: 'center',
-    lineHeight: 24,
-    marginBottom: 24,
-  },
-  retryButton: {
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
-  },
-  searchContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: isDark ? '#374151' : '#f3f4f6',
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginRight: 12,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    marginLeft: 8,
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  layersButton: {
-    padding: 8,
-  },
-  statusBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#e5e7eb',
-  },
-  locationStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statusText: {
-    fontSize: 14,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginLeft: 6,
-  },
-  offlineIndicator: {
-    fontSize: 12,
-    color: '#10b981',
-    fontWeight: '500',
-  },
-  mapContainer: {
-    flex: 1,
-    position: 'relative',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: '100%',
-  },
-  mapPlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: isDark ? '#374151' : '#e5e7eb',
-    margin: 16,
-    borderRadius: 12,
-  },
-  mapText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginTop: 8,
-  },
-  mapSubtext: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 4,
-  },
+const createStyles = (dark: boolean) =>
+  StyleSheet.create({
+    container: { flex: 1, backgroundColor: dark ? '#000' : '#f8fafc' },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: dark ? '#0b0b0b' : '#fff',
+      borderBottomWidth: 1,
+      borderBottomColor: dark ? '#1f2937' : '#e5e7eb',
+      zIndex: 1,
+    },
+    searchContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: dark ? '#111827' : '#f3f4f6',
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+    },
+    searchInput: { flex: 1, fontSize: 16, marginLeft: 8, color: dark ? '#f9fafb' : '#1f2937' },
+    stateBox: { padding: 16, gap: 12, alignItems: 'center' },
+    stateText: { color: dark ? '#d1d5db' : '#374151' },
 
-  myLocationButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    padding: 12,
-    borderRadius: 50,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  routePreview: {
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  routeHeader: {
-    marginBottom: 12,
-  },
-  routeTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginBottom: 8,
-  },
-  routeStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  routeTime: {
-    fontSize: 14,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginLeft: 4,
-  },
-  routeDistance: {
-    fontSize: 14,
-    color: isDark ? '#9ca3af' : '#6b7280',
-  },
-  routeType: {
-    fontSize: 12,
-    color: '#10b981',
-    fontWeight: '500',
-    backgroundColor: '#f0fdf4',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-  },
-  routeOptions: {
-    marginBottom: 16,
-  },
-  routeOption: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: isDark ? '#374151' : '#f8fafc',
-    borderRadius: 8,
-  },
-  routeOptionText: {
-    marginLeft: 12,
-  },
-  routeOptionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  routeOptionDesc: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-  },
-  startButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#2563eb',
-    paddingVertical: 14,
-    borderRadius: 8,
-    gap: 8,
-  },
-  startButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  poisContainer: {
-    maxHeight: 200,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  poisTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    padding: 16,
-    paddingBottom: 8,
-  },
-  poiItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: isDark ? '#374151' : '#f3f4f6',
-  },
-  poiIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  poiInfo: {
-    flex: 1,
-  },
-  poiName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-  },
-  poiType: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    marginTop: 2,
-  },
-  poiHours: {
-    fontSize: 11,
-    color: '#10b981',
-    marginTop: 2,
-  },
-  poiDistance: {
-    fontSize: 12,
-    color: isDark ? '#9ca3af' : '#6b7280',
-    fontWeight: '500',
-  },
-  layersPanel: {
-    position: 'absolute',
-    top: 120,
-    right: 16,
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    minWidth: 200,
-  },
-  layersPanelTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: isDark ? '#f9fafb' : '#1f2937',
-    marginBottom: 12,
-  },
-  layerItem: {
-    paddingVertical: 8,
-  },
-  layerText: {
-    fontSize: 14,
-    color: isDark ? '#d1d5db' : '#374151',
-  },
-  openMapsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2563eb',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    marginTop: 16,
-    gap: 8,
-  },
-  openMapsText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  webPOIList: {
-    marginTop: 16,
-    gap: 8,
-  },
-  webPOIItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: isDark ? '#1f2937' : '#ffffff',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 8,
-    justifyContent: 'space-between',
-  },
-  webPOIText: {
-    fontSize: 14,
-    color: isDark ? '#f9fafb' : '#1f2937',
-    fontWeight: '500',
-    flex: 1,
-  },
-  poiActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  poiMapsButton: {
-    padding: 4,
-    borderRadius: 4,
-    backgroundColor: isDark ? '#1e3a8a' : '#eff6ff',
-  },
-});
+    myLocationButton: {
+      position: 'absolute',
+      bottom: 20,
+      right: 20,
+      backgroundColor: dark ? '#0b0b0b' : '#ffffff',
+      padding: 12,
+      borderRadius: 50,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+
+    primaryBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 8,
+      backgroundColor: '#2563eb',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+    },
+    primaryBtnText: { color: '#fff', fontWeight: '600' },
+
+    pois: {
+      maxHeight: 240,
+      backgroundColor: dark ? '#0b0b0b' : '#fff',
+      margin: 16,
+      borderRadius: 12,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    poisTitle: { color: dark ? '#f9fafb' : '#1f2937', fontWeight: '600', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
+    poiItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: dark ? '#1f2937' : '#f3f4f6',
+      gap: 12,
+    },
+    poiIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: dark ? '#0b0b0b' : '#eff6ff',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: dark ? 1 : 0,
+      borderColor: '#1f2937',
+    },
+    poiName: { color: dark ? '#f9fafb' : '#1f2937', fontWeight: '600' },
+    poiType: { color: dark ? '#9ca3af' : '#6b7280', fontSize: 12, marginTop: 2 },
+    poiDistance: { color: dark ? '#9ca3af' : '#6b7280', fontWeight: '500' },
+  });

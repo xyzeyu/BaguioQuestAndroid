@@ -1,0 +1,478 @@
+[
+  {
+    "name": "Burnham Park",
+    "query": "Burnham Park, Baguio, Philippines",
+    "lat": 16.4080101,
+    "lng": 120.5959849,
+    "type": "park",
+    "display_name": "Burnham Park, District 4, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 330642136
+  },
+  {
+    "name": "Baguio Cathedral",
+    "query": "Baguio Cathedral, Baguio, Philippines",
+    "lat": 16.412901,
+    "lng": 120.598497,
+    "type": "place_of_worship",
+    "display_name": "Baguio Cathedral, Pilgrm's Stairs, Kabayanihan, District 18, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 11606987214
+  },
+  {
+    "name": "Session Road",
+    "query": "Session Road, Baguio, Philippines",
+    "lat": 16.4125044,
+    "lng": 120.5975059,
+    "type": "attraction",
+    "display_name": "Session Road, Kabayanihan, District 18, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 1190964348
+  },
+  {
+    "name": "Mines View Park",
+    "query": "Mines View Park, Baguio, Philippines",
+    "lat": 16.4197006,
+    "lng": 120.6274987,
+    "type": "park",
+    "display_name": "Mines View Park, Mines View, District 1, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 109351462
+  },
+  {
+    "name": "Baguio Botanical Garden",
+    "query": "Baguio Botanical Garden, Baguio, Philippines",
+    "lat": 16.4141159,
+    "lng": 120.6137807,
+    "type": "garden",
+    "display_name": "Baguio Botanical Garden, Leonard Wood Road, Navy Base - Polo Field, Saint Joseph Village, District 1, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 14181288
+  },
+  {
+    "name": "Wright Park",
+    "query": "Wright Park, Baguio, Philippines",
+    "lat": 16.4151386,
+    "lng": 120.6185897,
+    "type": "park",
+    "display_name": "Wright Park, Lualhati, District 11, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 12714120
+  },
+  {
+    "name": "SM City Baguio",
+    "query": "SM City Baguio, Baguio, Philippines",
+    "lat": 16.408943,
+    "lng": 120.599174,
+    "type": "mall",
+    "display_name": "SM City Baguio, Luneta Hill Drive, Session Road, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 15871764
+  },
+  {
+    "name": "Camp John Hay",
+    "query": "Camp John Hay, Baguio, Philippines",
+    "lat": 16.3994067,
+    "lng": 120.6156993,
+    "type": "neighbourhood",
+    "display_name": "Camp John Hay, Country Club, District 11, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 8595268914
+  },
+  {
+    "name": "The Mansion",
+    "query": "The Mansion, Baguio, Philippines",
+    "lat": 16.4123556,
+    "lng": 120.6214518,
+    "type": "yes",
+    "display_name": "Mansion House, V. L. Romulo Drive, Wright Park Place Condominium, Lualhati, District 11, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 43615594
+  },
+  {
+    "name": "Baguio Public Market",
+    "query": "Baguio Public Market, Baguio, Philippines",
+    "lat": 16.4144998,
+    "lng": 120.595055,
+    "type": "police",
+    "display_name": "PS 7 City Public Market, Kayang Street, Hilltop Kayang, District 18, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 11154658686
+  },
+  {
+    "name": "Lion's Head",
+    "query": "Lion's Head, Baguio, Philippines",
+    "lat": 16.3676002,
+    "lng": 120.6060035,
+    "type": "attraction",
+    "display_name": "Lion's Head, Kennon Road, Camp 7, District 13, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 109582851
+  },
+  {
+    "name": "Teachers Camp",
+    "query": "Teachers Camp, Baguio, Philippines",
+    "lat": 16.4116436,
+    "lng": 120.6063928,
+    "type": "administrative",
+    "display_name": "Cabinet Hill - Teachers Camp, District 2, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 15782418
+  },
+  {
+    "name": "Strawberry Farm",
+    "query": "Strawberry Farm, Baguio, Philippines",
+    "lat": 16.4586141,
+    "lng": 120.588497,
+    "type": "bus_stop",
+    "display_name": "Strawberry Farm, Benguet Provincial National Road, Central, Town Proper, Cruz, La Trinidad, Benguet, Cordillera Administrative Region, 2601, Philippines",
+    "osm_type": "node",
+    "osm_id": 8932902318
+  },
+  {
+    "name": "Tam-awan Village",
+    "query": "Tam-awan Village, Baguio, Philippines",
+    "lat": 16.4299561,
+    "lng": 120.5769083,
+    "type": "park",
+    "display_name": "Tam-Awan Village, 366 C, Purok 1, Pinsao Proper, District 16, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 209022152
+  },
+  {
+    "name": "Bencab Museum",
+    "query": "Bencab Museum, Baguio, Philippines",
+    "lat": 16.4105437,
+    "lng": 120.5503074,
+    "type": "restaurant",
+    "display_name": "Café Sabel, Asin Road, Kilometer 6, Baguio, Benguet, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 2201236631
+  },
+  {
+    "name": "Asin Hot Springs",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Baguio Country Club",
+    "query": "Baguio Country Club, Baguio, Philippines",
+    "lat": 16.4088626,
+    "lng": 120.598732,
+    "type": "cafe",
+    "display_name": "Baguio Country Club, Governor Pack Road, Purok 8, Session Road, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 9852479239
+  },
+  {
+    "name": "Mirador Jesuit Villa",
+    "query": "Mirador Jesuit Villa, Baguio, Philippines",
+    "lat": 16.4092779,
+    "lng": 120.580304,
+    "type": "residential",
+    "display_name": "St. Joseph – Mirador Jesuit Villa, Suscipe Eco-Trail, Malaya Village, Dominican Mirador, District 15, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 15595349
+  },
+  {
+    "name": "Good Shepherd Convent",
+    "query": "Good Shepherd Convent, Baguio, Philippines",
+    "lat": 16.4223259,
+    "lng": 120.6261256,
+    "type": "confectionery",
+    "display_name": "Good Shepherd Sisters Convent, Dominica Lane, Europa Condominium, Mines View, District 1, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 384142750
+  },
+  {
+    "name": "Lourdes Grotto",
+    "query": "Lourdes Grotto, Baguio, Philippines",
+    "lat": 16.4105723,
+    "lng": 120.5813395,
+    "type": "information",
+    "display_name": "Lourdes Grotto Welcome Sign, Dominican Hill Road, Malaya Village, Dominican Mirador, District 15, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 10676981000
+  },
+  {
+    "name": "Baguio Flower Festival Park",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Diplomat Hotel",
+    "query": "Diplomat Hotel, Baguio, Philippines",
+    "lat": 16.4059214,
+    "lng": 120.5850756,
+    "type": "bus_stop",
+    "display_name": "Dominican Hill, Saint Anthony Street, Malaya Village, Dominican Mirador, District 15, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 9352496669
+  },
+  {
+    "name": "Café by the Ruins",
+    "query": "Café by the Ruins, Baguio, Philippines",
+    "lat": 16.4128191,
+    "lng": 120.5916687,
+    "type": "restaurant",
+    "display_name": "Cafe by the Ruins, Abanao Extension, Rizal Monument, District 18, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 558017739
+  },
+  {
+    "name": "Oh My Gulay",
+    "query": "Oh My Gulay, Baguio, Philippines",
+    "lat": 16.4138271,
+    "lng": 120.59735,
+    "type": "restaurant",
+    "display_name": "Oh My Gulay (Basit), Assumption Road, Kabayanihan, District 18, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 7996745330
+  },
+  {
+    "name": "Lemon and Olives Greek Taverna",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Hill Station",
+    "query": "Hill Station, Baguio, Philippines",
+    "lat": 16.4097,
+    "lng": 120.6004816,
+    "type": "restaurant",
+    "display_name": "Hill Station, Upper Session Road, Session Road, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 1280844651
+  },
+  {
+    "name": "The Original Good Taste Cafe & Restaurant",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Agara Ramen",
+    "query": "Agara Ramen, Baguio, Philippines",
+    "lat": 16.4090986,
+    "lng": 120.5920757,
+    "type": "restaurant",
+    "display_name": "Agara Ramen, Legarda Road, Purok 4, Burnham Legarda, District 4, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 10984521006
+  },
+  {
+    "name": "Amare La Cucina",
+    "query": "Amare La Cucina, Baguio, Philippines",
+    "lat": 16.4061462,
+    "lng": 120.6026335,
+    "type": "restaurant",
+    "display_name": "Amare la Cucina, R. Villalon Street, Bal Marcoville, District 2, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 2616866525
+  },
+  {
+    "name": "Canto Bogchi Joint",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Chaya",
+    "query": "Chaya, Baguio, Philippines",
+    "lat": 16.4080347,
+    "lng": 120.5986894,
+    "type": "restaurant",
+    "display_name": "Chaya, SM City Baguio Basement Parking, Session Road, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 10252853297
+  },
+  {
+    "name": "Balajadia Kitchenette",
+    "query": "Balajadia Kitchenette, Baguio, Philippines",
+    "lat": 16.4201144,
+    "lng": 120.5939224,
+    "type": "restaurant",
+    "display_name": "Balajadia Kitchenette, Balajadia Street, Slaughter House, District 7, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 11513498203
+  },
+  {
+    "name": "50's Diner Baguio",
+    "query": "50's Diner Baguio, Baguio, Philippines",
+    "lat": 16.4029627,
+    "lng": 120.5992781,
+    "type": "restaurant",
+    "display_name": "50's Diner Baguio, 166 B, Military Cut-off Road, Military Cut-Off, District 13, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 9253354698
+  },
+  {
+    "name": "The Manor at Camp John Hay",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "The Forest Lodge at Camp John Hay",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Sotogrande Hotel Baguio",
+    "query": "Sotogrande Hotel Baguio, Baguio, Philippines",
+    "lat": 16.414312,
+    "lng": 120.6067595,
+    "type": "hotel",
+    "display_name": "Sotogrande Hotel, Leonard Wood Loop, Purok 1, Cabinet Hill - Teachers Camp, District 2, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 11928076281
+  },
+  {
+    "name": "Microtel by Wyndham Baguio",
+    "query": "Microtel by Wyndham Baguio, Baguio, Philippines",
+    "lat": 16.4063447,
+    "lng": 120.6026484,
+    "type": "hotel",
+    "display_name": "Microtel Inn & Suites, R. Villalon Street, Bal Marcoville, District 2, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 109499849
+  },
+  {
+    "name": "Hotel Elizabeth Baguio",
+    "query": "Hotel Elizabeth Baguio, Baguio, Philippines",
+    "lat": 16.4170869,
+    "lng": 120.6204841,
+    "type": "hotel",
+    "display_name": "Hotel Elizabeth, Julian Felipe Street, Wright Park Place Condominium, Gibraltar, District 1, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 881683578
+  },
+  {
+    "name": "G1 Lodge Design Hotel",
+    "query": "G1 Lodge Design Hotel, Baguio, Philippines",
+    "lat": 16.4105319,
+    "lng": 120.6000611,
+    "type": "hotel",
+    "display_name": "G1 Lodge, Leonard Wood Road, Salud Mitra, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 372231431
+  },
+  {
+    "name": "Grand Sierra Pines Hotel",
+    "query": "Grand Sierra Pines Hotel, Baguio, Philippines",
+    "lat": 16.4154613,
+    "lng": 120.6256281,
+    "type": "hotel",
+    "display_name": "Grand Sierra Pines Baguio, Outlook Drive, Gibraltar, District 1, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 553666815
+  },
+  {
+    "name": "Kamiseta Hotel",
+    "query": "Kamiseta Hotel, Baguio, Philippines",
+    "lat": 16.4120458,
+    "lng": 120.6192897,
+    "type": "hotel",
+    "display_name": "Kamiseta Hotel, 20, Ignacio Villamor Street, Wright Park Place Condominium, Lualhati, District 11, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "way",
+    "osm_id": 627466148
+  },
+  {
+    "name": "Casa Vallejo",
+    "query": "Casa Vallejo, Baguio, Philippines",
+    "lat": 16.4095786,
+    "lng": 120.600491,
+    "type": "hotel",
+    "display_name": "Casa Vallejo, Upper Session Road, Session Road, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 3040247723
+  },
+  {
+    "name": "Maharlika Livelihood Center",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Session Road Sunday Market",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Harrison Road Night Market",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Easter Weaving, Inc.",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Mt. Cloud Bookshop",
+    "query": "Mt. Cloud Bookshop, Baguio, Philippines",
+    "lat": 16.4135271,
+    "lng": 120.6036752,
+    "type": "books",
+    "display_name": "Mt. Cloud Bookshop, Yangco Road, Purok 1, Upper General Luna, District 10, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 1167842293
+  },
+  {
+    "name": "Redzel's Baguio",
+    "query": "Redzel's Baguio, Baguio, Philippines",
+    "lat": 16.4071438,
+    "lng": 120.5922045,
+    "type": "confectionery",
+    "display_name": "Redzel's - Baguio's Original Homemade Ube Halaya, 39, Legarda Road, Purok 3, Burnham Legarda, District 4, Central Business District, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "node",
+    "osm_id": 9227605595
+  },
+  {
+    "name": "Shell – Abanao Road",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Shell – Marcos Highway (KM 4)",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Caltex – Brower Road",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Caltex – Chanum Street",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "Petron – Worcester Road",
+    "lat": null,
+    "lng": null,
+    "note": "not_found"
+  },
+  {
+    "name": "JCQ Gas Station – Kennon Road",
+    "query": "JCQ Gas Station – Kennon Road, Baguio, Philippines",
+    "lat": 16.3838141,
+    "lng": 120.6033015,
+    "type": "fuel",
+    "display_name": "JCQ Gas Station, Kennon Road, Petersville Subdivision, Camp 7, District 13, Baguio, Cordillera Administrative Region, 2600, Philippines",
+    "osm_type": "relation",
+    "osm_id": 18069244
+  }
+]
