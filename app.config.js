@@ -31,6 +31,7 @@ module.exports = ({ config }) => ({
       NSLocationAlwaysUsageDescription: "Allow $(PRODUCT_NAME) to use your location.",
       NSLocationWhenInUseUsageDescription: "Allow $(PRODUCT_NAME) to use your location.",
       UIBackgroundModes: ["location"],
+      // (No special Info.plist string is required for notifications on iOS)
     },
     // Apple Maps is default, but if you use Google tiles on iOS you also need the key here:
     config: {
@@ -52,6 +53,8 @@ module.exports = ({ config }) => ({
       "FOREGROUND_SERVICE",
       "FOREGROUND_SERVICE_LOCATION",
       "ACCESS_BACKGROUND_LOCATION",
+      // 👇 Needed for Android 13+ local notifications
+      "POST_NOTIFICATIONS",
     ],
     // ✅ This wires your Google Maps API key into AndroidManifest as meta-data
     config: {
@@ -82,7 +85,8 @@ module.exports = ({ config }) => ({
         locationAlwaysAndWhenInUsePermission: "Allow $(PRODUCT_NAME) to use your location.",
       },
     ],
-    // 🚫 DO NOT put "react-native-maps" here (that's what triggered your error)
+    // 👇 Add notifications plugin so permissions & channels are set up correctly
+    "expo-notifications",
   ],
 
   experiments: { typedRoutes: true },

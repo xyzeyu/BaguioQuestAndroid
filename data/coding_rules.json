@@ -1,0 +1,12 @@
+{
+  "timezone": "Asia/Manila",
+  "window": { "start": "07:00", "end": "19:00", "days": ["Mon", "Tue", "Wed", "Thu", "Fri"] },
+  "mapping": {
+    "Mon": [1, 2],
+    "Tue": [3, 4],
+    "Wed": [5, 6],
+    "Thu": [7, 8],
+    "Fri": [9, 0]
+  },
+  "notes": "Demo defaults. Update when LGU advisories change."
+}

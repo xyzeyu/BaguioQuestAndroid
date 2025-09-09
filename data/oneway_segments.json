@@ -1,0 +1,93 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Session Road", "direction": 146.85, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.5987759, 16.411575], [120.59945, 16.410585]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Post Office Loop", "direction": 340.68, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.599633, 16.411036], [120.599311, 16.411917]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Upper Session Road 1", "direction": 169.87, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.599964, 16.410137], [120.600487, 16.407328]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Leonard Wood Road 1", "direction": 311.11, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.60194, 16.409105], [120.599633, 16.411036]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Jungle Town", "direction": 325.92, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.603029, 16.409584], [120.602007, 16.411033]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Leonard Wood Road 2", "direction": 240.61, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.60876, 16.414569], [120.60804, 16.41418]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Navy Base", "direction": 261.2, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.612982, 16.415196], [120.60876, 16.414569]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Upper Session Road 2", "direction": 326.2, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.60157, 16.405655], [120.600533, 16.407141]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Convention", "direction": 122.13, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.600396, 16.406305], [120.601558, 16.405605]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "UP Drive", "direction": 28.98, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.597105, 16.405186], [120.599964, 16.410137]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Gov Pack", "direction": 206.94, "oneway": "yes" },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[120.598158, 16.407389], [120.596812, 16.404848]]
+      }
+    }
+  ]
+}

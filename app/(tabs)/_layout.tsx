@@ -10,8 +10,10 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      initialRouteName="map"
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: '#2563eb',
         tabBarInactiveTintColor: dark ? '#9ca3af' : '#6b7280',
         tabBarStyle: {
@@ -31,13 +33,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="search"
-        options={{
-          title: 'Search',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="search-outline" color={color} size={size} />
-          ),
-        }}
+      name="search"
+      options={{
+        title: 'Search',
+        tabBarIcon: ({ color, size }) => (
+          <Ionicons name="search-outline" color={color} size={size} />
+        ),
+      }}
       />
       <Tabs.Screen
         name="downloads"

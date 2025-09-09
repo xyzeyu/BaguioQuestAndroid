@@ -1,15 +1,39 @@
 // app/(tabs)/map.tsx
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Alert,
+  Platform,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import MapView, {
+  Marker,
+  PROVIDER_GOOGLE,
+  Region,
+  Polygon,
+  Polyline,
+} from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useBaguioQuest } from '../../hooks/use-baguio-quest';
 import type { POI } from '../../types/navigation';
 import { calculateDistanceMeters } from '../../utils/navigation';
+
+// NEW: coding + geofences + notifications + sticky banner + json
+import { useNumberCoding, getSavedPlateLastDigit } from '../../hooks/use-number-coding';
+import { useGeofences } from '../../hooks/use-geofences';
+import { ensureNotificationSetup, notify } from '../../utils/notifications';
+import StickyBanner from '../../components/StickyBanner';
+import codingZone from '../../data/coding_zone.json';
+import oneWayData from '../../data/oneway_segments.json';
 
 export default function MapScreen() {
   const { currentLocation, nearbyPOIs, updateLocation, isDarkMode } = useBaguioQuest();
@@ -33,6 +57,28 @@ export default function MapScreen() {
     lng: initialRegion.longitude,
   });
 
+  // ---------- NEW: coding/alerts prefs ----------
+  const [plate, setPlate] = useState<number | undefined>(undefined);
+  const [alertsEnabled, setAlertsEnabled] = useState<boolean>(true);
+  const [notifiedKey, setNotifiedKey] = useState<string | null>(null); // avoid spam notifications
+
+  useEffect(() => {
+    (async () => {
+      const savedPlate = await getSavedPlateLastDigit();
+      if (savedPlate !== undefined) setPlate(savedPlate);
+      const codingAlerts = await AsyncStorage.getItem('codingAlerts');
+      if (codingAlerts != null) setAlertsEnabled(codingAlerts === 'true');
+      if (codingAlerts === 'true') await ensureNotificationSetup();
+    })();
+  }, []);
+
+  // Hook to evaluate coding status (based on day/time rules + plate)
+  const coding = useNumberCoding(plate);
+
+  // Hook for geofence/one-way checks
+  const { insideCodingZone, heading, nearestOneWay } = useGeofences();
+
+  // ---------- Original helpers ----------
   const formatDistance = (meters?: number) => {
     if (typeof meters !== 'number') return 'N/A';
     if (meters < 1000) return `${Math.round(meters)} m`;
@@ -45,7 +91,11 @@ export default function MapScreen() {
       const granted = status === 'granted';
       setLocationPermission(granted);
       if (!granted) {
-        Alert.alert('Location Permission Required', 'BaguioQuest needs location access to show your position.', [{ text: 'OK' }]);
+        Alert.alert(
+          'Location Permission Required',
+          'BaguioQuest needs location access to show your position.',
+          [{ text: 'OK' }]
+        );
         return;
       }
 
@@ -60,7 +110,10 @@ export default function MapScreen() {
       updateLocation({ latitude: lat, longitude: lng, accuracy: acc });
 
       requestAnimationFrame(() => {
-        mapRef.current?.animateToRegion({ latitude: lat, longitude: lng, latitudeDelta: 0.02, longitudeDelta: 0.02 }, 600);
+        mapRef.current?.animateToRegion(
+          { latitude: lat, longitude: lng, latitudeDelta: 0.02, longitudeDelta: 0.02 },
+          600
+        );
       });
 
       if (Platform.OS !== 'web') {
@@ -118,6 +171,46 @@ export default function MapScreen() {
     router.push({ pathname: '/poi-details', params: { poiId: poi.id } });
   };
 
+  // ---------- NEW: Coding Zone polygon coordinates ----------
+  const codingPolygon = useMemo(() => {
+    try {
+      const ring = (codingZone as any).features[0].geometry.coordinates[0];
+      return ring.map((c: number[]) => ({ latitude: c[1], longitude: c[0] }));
+    } catch {
+      return [];
+    }
+  }, []);
+
+  // ---------- NEW: One-way polyline to paint if user is near ----------
+  const oneWayPolyline = useMemo(() => {
+    if (!nearestOneWay || nearestOneWay.distanceM > 30) return undefined;
+    // Use the first feature or match by name if available
+    const feat =
+      (oneWayData as any).features.find((f: any) => f.properties?.name === nearestOneWay.name) ||
+      (oneWayData as any).features[0];
+    if (!feat) return undefined;
+    const coords = feat.geometry.coordinates.map((c: number[]) => ({
+      latitude: c[1],
+      longitude: c[0],
+    }));
+    return { coords, ok: nearestOneWay.ok };
+  }, [nearestOneWay]);
+
+  // ---------- NEW: Notify on risky enter (zone + affected + window) ----------
+  useEffect(() => {
+    if (!alertsEnabled) return;
+    (async () => {
+      const ready = await ensureNotificationSetup();
+      if (!ready) return;
+
+      const key = `${insideCodingZone}-${coding.isAffected}-${coding.isWindow}-${coding.dayKey}`;
+      if (insideCodingZone && coding.isAffected && coding.isWindow && notifiedKey !== key) {
+        notify('Number Coding Zone', 'You’re entering a Coding Zone and are restricted today.');
+        setNotifiedKey(key);
+      }
+    })();
+  }, [insideCodingZone, coding.isAffected, coding.isWindow, coding.dayKey, alertsEnabled, notifiedKey]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header / Search */}
@@ -130,7 +223,9 @@ export default function MapScreen() {
             placeholderTextColor={dark ? '#9ca3af' : '#6b7280'}
             value={searchQuery}
             onChangeText={setSearchQuery}
-            onSubmitEditing={() => router.push({ pathname: '/search', params: { q: searchQuery } })}
+            onSubmitEditing={() =>
+              router.push({ pathname: '/search', params: { q: searchQuery } })
+            }
             returnKeyType="search"
           />
         </View>
@@ -145,15 +240,21 @@ export default function MapScreen() {
       {locationPermission === false && (
         <View style={styles.stateBox}>
           <Ionicons name="warning-outline" size={24} color="#ef4444" />
-          <Text style={styles.stateText}>Location access needed. Enable in Settings, then tap “Retry”.</Text>
+          <Text style={styles.stateText}>
+            Location access needed. Enable in Settings, then tap “Retry”.
+          </Text>
           <TouchableOpacity style={styles.primaryBtn} onPress={requestLocationPermission}>
             <Text style={styles.primaryBtnText}>Retry</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.primaryBtn, { backgroundColor: dark ? '#111827' : '#e5e7eb' }]}
-            onPress={() => updateLocation({ latitude: 16.4023, longitude: 120.5960, accuracy: 10 })}
+            onPress={() =>
+              updateLocation({ latitude: 16.4023, longitude: 120.596, accuracy: 10 })
+            }
           >
-            <Text style={[styles.primaryBtnText, { color: dark ? '#f9fafb' : '#111827' }]}>Use Demo Location</Text>
+            <Text style={[styles.primaryBtnText, { color: dark ? '#f9fafb' : '#111827' }]}>
+              Use Demo Location
+            </Text>
           </TouchableOpacity>
         </View>
       )}
@@ -173,6 +274,26 @@ export default function MapScreen() {
           rotateEnabled
           pitchEnabled
         >
+          {/* NEW: Coding Zone polygon overlay */}
+          {codingPolygon.length > 0 && (
+            <Polygon
+              coordinates={codingPolygon}
+              strokeWidth={2}
+              strokeColor="#D97706"
+              fillColor="rgba(217,119,6,0.15)"
+            />
+          )}
+
+          {/* NEW: Nearby one-way segment coloring (green ok / red wrong) */}
+          {oneWayPolyline && (
+            <Polyline
+              coordinates={oneWayPolyline.coords}
+              strokeWidth={6}
+              strokeColor={oneWayPolyline.ok ? '#10b981' : '#ef4444'}
+            />
+          )}
+
+          {/* Your markers/POIs */}
           {poisWithCoords.map((poi) => (
             <Marker
               key={poi.id}
@@ -190,6 +311,30 @@ export default function MapScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* NEW: Sticky banner for Coding restriction */}
+      {insideCodingZone && coding.isWindow && coding.isAffected && (
+        <StickyBanner
+          kind="warning"
+          text={`🚧 Number Coding Active — Your plate is restricted today (${coding.dayKey}, 7:00–19:00). Tap for alternate route.`}
+          onPress={() => {
+            notify('Alternate route', 'Trying to avoid the Coding Zone.');
+            // TODO: Add waypoint just outside polygon and open external Maps
+          }}
+        />
+      )}
+
+      {/* NEW: Sticky banner for One-way directionality */}
+      {nearestOneWay && nearestOneWay.distanceM <= 30 && (
+        <StickyBanner
+          kind={nearestOneWay.ok ? 'ok' : 'error'}
+          text={
+            nearestOneWay.ok
+              ? '✅ One-way alignment OK'
+              : '⚠️ One-way ahead — your heading is against flow. Re-route recommended.'
+          }
+        />
+      )}
+
       {/* Nearby POIs — distance from MAP center */}
       <ScrollView style={styles.pois} keyboardShouldPersistTaps="handled">
         <Text style={styles.poisTitle}>Nearby Places (from map center)</Text>
@@ -201,7 +346,9 @@ export default function MapScreen() {
             <View style={{ flex: 1 }}>
               <Text style={styles.poiName}>{poi.name}</Text>
               <Text style={styles.poiType}>{poi.type}</Text>
-              {(poi as any).hours ? <Text style={{ color: '#10b981', fontSize: 12 }}>{(poi as any).hours}</Text> : null}
+              {(poi as any).hours ? (
+                <Text style={{ color: '#10b981', fontSize: 12 }}>{(poi as any).hours}</Text>
+              ) : null}
             </View>
             <Text style={styles.poiDistance}>{formatDistance(poi.distanceMeters)}</Text>
           </TouchableOpacity>
@@ -273,7 +420,13 @@ const createStyles = (dark: boolean) =>
       shadowRadius: 4,
       elevation: 3,
     },
-    poisTitle: { color: dark ? '#f9fafb' : '#1f2937', fontWeight: '600', paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
+    poisTitle: {
+      color: dark ? '#f9fafb' : '#1f2937',
+      fontWeight: '600',
+      paddingHorizontal: 16,
+      paddingTop: 12,
+      paddingBottom: 8,
+    },
     poiItem: {
       flexDirection: 'row',
       alignItems: 'center',
