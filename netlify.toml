@@ -1,0 +1,9 @@
+[build]
+  publish = "pwa"
+  command = ""
+
+# Optional: correct content type for the web manifest
+[[headers]]
+  for = "/pwa/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
