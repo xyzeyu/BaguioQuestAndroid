@@ -1,0 +1,12 @@
+{
+"version": 1,
+"updated": "2025-09-25",
+"roads": [
+{ "name": "Session Road", "type": "primary", "oneWay": true },
+{ "name": "Leonard Wood Road", "type": "primary", "oneWay": false }
+],
+"pois": [
+{ "name": "Burnham Park", "category": "park", "lat": 16.411, "lon": 120.595 },
+{ "name": "Mines View Park", "category": "viewpoint", "lat": 16.420, "lon": 120.627 }
+]
+}
