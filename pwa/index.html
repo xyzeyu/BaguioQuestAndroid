@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BaguioQuest – Smart Tourist Navigation</title>
+
+
+<!-- PWA basics -->
+<link rel="manifest" href="./manifest.webmanifest" />
+<meta name="theme-color" content="#0b0b0f" />
+<link rel="icon" href="./icons/icon-192.png" />
+
+
+<!-- iOS PWA support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<header class="topbar">
+<div class="brand">
+<img src="./icons/icon-192.png" alt="BaguioQuest" class="logo" />
+<h1>BaguioQuest</h1>
+</div>
+<nav>
+<a href="#/" data-link>Home</a>
+<a href="#/plate-checker" data-link>Plate Checker</a>
+<a href="#/map" data-link>Map</a>
+<a href="#/features" data-link>Features</a>
+<a href="#/help" data-link>How to Use</a>
+</nav>
+</header>
+
+
+<main id="app" class="container">
+<!-- Routed content renders here -->
+</main>
+
+
+<footer class="footer">
+<button id="installBtn" hidden>Install App</button>
+<small>© <span id="year"></span> BaguioQuest • Offline-ready • Netlify</small>
+</footer>
+
+
+<script src="./app.js" type="module"></script>
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('./sw.js');
+});
+}
+</script>
+</body>
+</html>
