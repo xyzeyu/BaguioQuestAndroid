@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
 
 # (Optional) correct MIME if you later host a custom manifest
 [[headers]]
