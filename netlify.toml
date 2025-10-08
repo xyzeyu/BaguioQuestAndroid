@@ -1,9 +1,12 @@
 [build]
-  publish = "pwa"
-  command = ""
+  command = "npx expo export:web"
+  publish = "dist"
 
-# Optional: correct content type for the web manifest
+[build.environment]
+  NODE_VERSION = "20"
+
+# (Optional) correct MIME if you later host a custom manifest
 [[headers]]
-  for = "/pwa/manifest.webmanifest"
+  for = "/manifest.webmanifest"
   [headers.values]
     Content-Type = "application/manifest+json"

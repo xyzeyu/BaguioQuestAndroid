@@ -1,8 +1,4 @@
 // app.config.js
-// ✅ JS config (not JSON), so environment variables & comments are allowed.
-//  - No "react-native-maps" plugin needed (avoids the config plugin error).
-//  - Google Maps API key is injected via env var: GOOGLE_MAPS_API_KEY.
-
 module.exports = ({ config }) => ({
   ...config,
 
@@ -13,6 +9,9 @@ module.exports = ({ config }) => ({
   scheme: "myapp",
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
+
+  // ✅ Make sure web is declared as a supported platform
+  platforms: ["ios", "android", "web"],
 
   icon: "./assets/images/icon.png",
 
@@ -31,9 +30,7 @@ module.exports = ({ config }) => ({
       NSLocationAlwaysUsageDescription: "Allow $(PRODUCT_NAME) to use your location.",
       NSLocationWhenInUseUsageDescription: "Allow $(PRODUCT_NAME) to use your location.",
       UIBackgroundModes: ["location"],
-      // (No special Info.plist string is required for notifications on iOS)
     },
-    // Apple Maps is default, but if you use Google tiles on iOS you also need the key here:
     config: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
@@ -53,10 +50,8 @@ module.exports = ({ config }) => ({
       "FOREGROUND_SERVICE",
       "FOREGROUND_SERVICE_LOCATION",
       "ACCESS_BACKGROUND_LOCATION",
-      // 👇 Needed for Android 13+ local notifications
       "POST_NOTIFICATIONS",
     ],
-    // ✅ This wires your Google Maps API key into AndroidManifest as meta-data
     config: {
       googleMaps: {
         apiKey: process.env.GOOGLE_MAPS_API_KEY,
@@ -64,17 +59,25 @@ module.exports = ({ config }) => ({
     },
   },
 
+  // ✅ Proper web (PWA) settings for static export
   web: {
-    favicon: "./assets/images/favicon.png",
+    bundler: "webpack",
+    output: "static",                      // export to /dist
+    favicon: "./assets/images/icon.png",   // make sure this file exists
+    name: "BaguioQuest",
+    shortName: "BaguioQuest",
+    description:
+      "Smart tourist navigation for Baguio City with coding-day alerts, offline maps, and route tracking.",
+    display: "standalone",
+    themeColor: "#0b0b0f",
+    backgroundColor: "#ffffff",
+    orientation: "portrait",
   },
 
   plugins: [
-    // Keep only valid, known plugins here
     [
       "expo-router",
-      {
-        origin: "https://rork.com/",
-      },
+      { origin: "https://rork.com/" },
     ],
     [
       "expo-location",
@@ -82,10 +85,10 @@ module.exports = ({ config }) => ({
         isAndroidForegroundServiceEnabled: true,
         isAndroidBackgroundLocationEnabled: true,
         isIosBackgroundLocationEnabled: true,
-        locationAlwaysAndWhenInUsePermission: "Allow $(PRODUCT_NAME) to use your location.",
+        locationAlwaysAndWhenInUsePermission:
+          "Allow $(PRODUCT_NAME) to use your location.",
       },
     ],
-    // 👇 Add notifications plugin so permissions & channels are set up correctly
     "expo-notifications",
   ],
 
