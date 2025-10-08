@@ -19,11 +19,17 @@ export default function RootLayout() {
     <BaguioQuestProvider>
       <QueryClientProvider client={queryClient}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack screenOptions={{ headerShown: false }}>
+          <Stack
+            screenOptions={{ headerShown: false }}
+            initialRouteName="index"
+          >
+            {/* Only declare routes that exist to avoid runtime errors on web */}
             <Stack.Screen name="index" />
-            <Stack.Screen name="splash" />
-            <Stack.Screen name="terms" />
-            <Stack.Screen name="(tabs)" />
+            {/* Add these back once their files exist:
+                <Stack.Screen name="splash" />
+                <Stack.Screen name="terms" />
+                <Stack.Screen name="(tabs)" />
+            */}
           </Stack>
         </GestureHandlerRootView>
       </QueryClientProvider>
