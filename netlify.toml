@@ -1,12 +1,14 @@
 [build]
-  command = "npx expo export:web"
+  command = "npm ci && npm run build:web"
   publish = "dist"
 
-[build.environment]
-  NODE_VERSION = "20"
-  NPM_FLAGS = "--legacy-peer-deps"
+# SPA routing for Expo Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
-# (Optional) correct MIME if you later host a custom manifest
+# Proper MIME for the PWA manifest
 [[headers]]
   for = "/manifest.webmanifest"
   [headers.values]
