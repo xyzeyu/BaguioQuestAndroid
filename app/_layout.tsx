@@ -2,37 +2,23 @@
 import { Stack } from "expo-router";
 import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// Use RELATIVE import to avoid alias issues while debugging
-import { BaguioQuestProvider } from "../hooks/use-baguio-quest";
-
-const queryClient = new QueryClient();
+// import { GestureHandlerRootView } from "react-native-gesture-handler"; // optional while debugging
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// import { BaguioQuestProvider } from "../hooks/use-baguio-quest";
 
 export default function RootLayout() {
   useEffect(() => {
-    // Don’t block the UI; if there’s an error we’ll see it
     SplashScreen.hideAsync().catch(() => {});
   }, []);
 
   return (
-    <BaguioQuestProvider>
-      <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack
-            screenOptions={{ headerShown: false }}
-            initialRouteName="index"
-          >
-            {/* Only declare routes that exist to avoid runtime errors on web */}
-            <Stack.Screen name="index" />
-            {/* Add these back once their files exist:
-                <Stack.Screen name="splash" />
-                <Stack.Screen name="terms" />
-                <Stack.Screen name="(tabs)" />
-            */}
-          </Stack>
-        </GestureHandlerRootView>
-      </QueryClientProvider>
-    </BaguioQuestProvider>
+    <Stack screenOptions={{ headerShown: false }} initialRouteName="index">
+      <Stack.Screen name="index" />
+      {/* Re-add when files exist and errors are gone:
+        <Stack.Screen name="splash" />
+        <Stack.Screen name="terms" />
+        <Stack.Screen name="(tabs)" />
+      */}
+    </Stack>
   );
 }

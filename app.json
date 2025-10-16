@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "BaguioQuest",
+    "slug": "baguioquest",
+    "scheme": "myapp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "platforms": ["ios", "android", "web"],
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/icon.png",
+      "name": "BaguioQuest",
+      "shortName": "BaguioQuest",
+      "description": "Smart tourist navigation for Baguio City with coding-day alerts, offline maps, and route tracking.",
+      "display": "standalone",
+      "themeColor": "#0b0b0f",
+      "backgroundColor": "#ffffff",
+      "orientation": "portrait"
+    },
+    "plugins": [
+      ["expo-router", { "origin": "https://rork.com/" }],
+      "expo-notifications",
+      ["expo-location", {
+        "isAndroidForegroundServiceEnabled": true,
+        "isAndroidBackgroundLocationEnabled": true,
+        "isIosBackgroundLocationEnabled": true,
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }]
+    ],
+    "extra": {
+      "router": { "origin": "https://rork.com/" },
+      "eas": { "projectId": "e0dea9ea-8fb7-4d59-af0c-415f07953a69" }
+    }
+  }
+}

@@ -1,80 +1,89 @@
 // app/index.tsx
 import { useEffect } from "react";
-import { View, ActivityIndicator, Platform, Text, Pressable } from "react-native";
+import { View, Text, Platform, Pressable } from "react-native";
 import { router, Link } from "expo-router";
-import { useBaguioQuest } from "../hooks/use-baguio-quest";
 
 export default function IndexScreen() {
-  const { hasSeenSplash, hasAcceptedTerms } = useBaguioQuest();
-
   useEffect(() => {
-    // Keep auto-nav for native only to avoid blank pages / 404 loops on web
+    // Only auto-redirect on native platforms
     if (Platform.OS !== "web") {
-      const t = setTimeout(() => {
-        if (!hasSeenSplash) router.replace("/splash");
-        else if (!hasAcceptedTerms) router.replace("/terms");
-        else router.replace("/(tabs)/map");
-      }, 50);
-      return () => clearTimeout(t);
+      const timer = setTimeout(() => {
+        try {
+          // Replace with your real routing logic for Android/iOS
+          router.replace("/splash");
+        } catch (err) {
+          console.error("Navigation error:", err);
+        }
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [hasSeenSplash, hasAcceptedTerms]);
+  }, []);
 
-  if (Platform.OS === "web") {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 16,
-          backgroundColor: "#fff",
-          padding: 24,
-        }}
-      >
-        <Text style={{ fontSize: 22, fontWeight: "600" }}>BaguioQuest (Web)</Text>
-        <Text style={{ color: "#555", textAlign: "center", maxWidth: 520 }}>
-          Welcome! This web build doesn’t auto-redirect. Use the links below to open pages
-          (make sure the corresponding files exist in <Text style={{ fontWeight: "700" }}>/app</Text>).
-        </Text>
-
-        {/* These links are safe; if a route doesn't exist you'll just see Not Found */}
-        <View style={{ flexDirection: "row", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-          <Link href="/splash" asChild>
-            <Pressable style={btnStyle}><Text style={btnText}>Open Splash</Text></Pressable>
-          </Link>
-          <Link href="/terms" asChild>
-            <Pressable style={btnStyle}><Text style={btnText}>Open Terms</Text></Pressable>
-          </Link>
-          <Link href="/(tabs)/map" asChild>
-            <Pressable style={btnStyle}><Text style={btnText}>Open Map</Text></Pressable>
-          </Link>
-          <Link href="/" asChild>
-            <Pressable style={[btnStyle, { backgroundColor: "#e9ecef" }]}>
-              <Text style={[btnText, { color: "#111" }]}>Stay Here</Text>
-            </Pressable>
-          </Link>
-        </View>
-
-        <Text style={{ marginTop: 8, color: "#888", fontSize: 12 }}>
-          Tip: add a <Text style={{ fontWeight: "700" }}>public/_redirects</Text> with “/* /index.html 200”
-          for SPA routing on Netlify.
-        </Text>
-      </View>
-    );
-  }
-
-  // Native: brief loader while redirecting
+  // Web: show safe landing screen (no auto nav)
   return (
     <View
       style={{
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
+        justifyContent: "center",
         backgroundColor: "#fff",
+        padding: 24,
+        gap: 16,
       }}
     >
-      <ActivityIndicator />
-      <Text style={{ marginTop: 10, color: "#444" }}>Loading BaguioQuest…</Text>
+      <Text style={{ fontSize: 26, fontWeight: "700", color: "#222" }}>
+        BaguioQuest PWA
+      </Text>
+      <Text
+        style={{
+          color: "#555",
+          textAlign: "center",
+          fontSize: 15,
+          maxWidth: 480,
+          lineHeight: 22,
+        }}
+      >
+        Welcome to the web version of BaguioQuest!  
+        This page ensures stable loading on Netlify while we connect routes.
+      </Text>
+
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 12,
+          flexWrap: "wrap",
+          justifyContent: "center",
+          marginTop: 10,
+        }}
+      >
+        <Link href="/splash" asChild>
+          <Pressable style={btnStyle}>
+            <Text style={btnText}>Go to Splash</Text>
+          </Pressable>
+        </Link>
+        <Link href="/terms" asChild>
+          <Pressable style={btnStyle}>
+            <Text style={btnText}>Go to Terms</Text>
+          </Pressable>
+        </Link>
+        <Link href="/(tabs)/map" asChild>
+          <Pressable style={btnStyle}>
+            <Text style={btnText}>Open Map</Text>
+          </Pressable>
+        </Link>
+      </View>
+
+      <Text
+        style={{
+          marginTop: 12,
+          fontSize: 12,
+          color: "#888",
+          textAlign: "center",
+        }}
+      >
+        ⚙️ Tip: Add <Text style={{ fontWeight: "bold" }}>public/_redirects</Text>  
+        with “/* /index.html 200” for proper routing on Netlify.
+      </Text>
     </View>
   );
 }
@@ -85,4 +94,5 @@ const btnStyle = {
   backgroundColor: "#0b57d0",
   borderRadius: 8,
 };
+
 const btnText = { color: "#fff", fontWeight: "600" };

@@ -10,8 +10,11 @@ module.exports = ({ config }) => ({
   userInterfaceStyle: "automatic",
   newArchEnabled: true,
 
-  // ✅ Make sure web is declared as a supported platform
+  // Make sure web is included
   platforms: ["ios", "android", "web"],
+
+  // ❌ REMOVE platformBundlers override (it forces webpack)
+  // platformBundlers: { web: "webpack" },
 
   icon: "./assets/images/icon.png",
 
@@ -31,9 +34,7 @@ module.exports = ({ config }) => ({
       NSLocationWhenInUseUsageDescription: "Allow $(PRODUCT_NAME) to use your location.",
       UIBackgroundModes: ["location"],
     },
-    config: {
-      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-    },
+    config: { googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY },
   },
 
   android: {
@@ -53,17 +54,15 @@ module.exports = ({ config }) => ({
       "POST_NOTIFICATIONS",
     ],
     config: {
-      googleMaps: {
-        apiKey: process.env.GOOGLE_MAPS_API_KEY,
-      },
+      googleMaps: { apiKey: process.env.GOOGLE_MAPS_API_KEY },
     },
   },
 
-  // ✅ Proper web (PWA) settings for static export
+  // ✅ Switch web bundler to Metro
   web: {
-    bundler: "webpack",
-    output: "static",                      // export to /dist
-    favicon: "./assets/images/icon.png",   // make sure this file exists
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/images/icon.png",
     name: "BaguioQuest",
     shortName: "BaguioQuest",
     description:
@@ -75,10 +74,7 @@ module.exports = ({ config }) => ({
   },
 
   plugins: [
-    [
-      "expo-router",
-      { origin: "https://rork.com/" },
-    ],
+    ["expo-router", { origin: "https://rork.com/" }],
     [
       "expo-location",
       {

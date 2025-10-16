@@ -4,11 +4,13 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "dev": "expo start --web",
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "cross-env EXPO_ROUTER_APP_ROOT=../../app expo start --web",
-    "build:web": "cross-env EXPO_ROUTER_APP_ROOT=../../app npx expo export:web",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "build:web": "expo export --platform web",
+    "preview:web": "serve dist",
     "prebuild": "expo prebuild",
     "export:android": "expo export --platform android",
     "build:apk": "eas build -p android --profile apk",
@@ -42,7 +44,9 @@
     "expo-symbols": "~0.4.4",
     "expo-system-ui": "~5.0.11",
     "expo-web-browser": "~14.2.0",
+    "idb": "^8.0.0",
     "lucide-react-native": "^0.542.0",
+    "maplibre-gl": "^3.6.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",
@@ -54,20 +58,20 @@
     "react-native-svg": "15.11.2",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
+    "workbox-window": "^7.1.0",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/ngrok": "^4.1.0",
-    "@expo/webpack-config": "^19.0.1",
     "@types/react": "~19.0.10",
     "cross-env": "^10.1.0",
     "eslint": "^9.31.0",
     "eslint-config-expo": "^9.2.0",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
+    "serve": "^14.2.3",
     "sharp-cli": "^5.2.0",
-    "typescript": "~5.8.3",
-    "webpack-dev-server": "^4.15.2"
+    "typescript": "~5.8.3"
   }
 }

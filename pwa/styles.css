@@ -1,0 +1,33 @@
+:root{
+--bg:#0b0b0f; /* midnight black */
+--fg:#e7e7ee;
+--muted:#9aa0a6;
+--accent:#6ee7ff;
+--card:#14141a;
+--ok:#34d399;
+--warn:#fbbf24;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+.topbar{position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:rgba(11,11,15,.85);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid #1f1f2a}
+.brand{display:flex;gap:10px;align-items:center}
+.logo{width:28px;height:28px;border-radius:8px}
+nav a{color:var(--muted);margin-left:14px;text-decoration:none}
+nav a:hover{color:var(--accent)}
+.container{max-width:980px;margin:24px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid #20202a;border-radius:16px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.grid{display:grid;gap:16px}
+.grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.input{width:100%;padding:12px;border-radius:12px;border:1px solid #2a2a36;background:#0e0e15;color:var(--fg)}
+.btn{padding:10px 14px;border-radius:12px;border:1px solid #2a2a36;background:#13131b;color:var(--fg);cursor:pointer}
+.btn:hover{border-color:#3a3a48}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#101018;border:1px solid #242432;color:var(--muted);font-size:12px}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:8px;align-items:center}
+.footer{display:flex;justify-content:space-between;align-items:center;max-width:980px;margin:40px auto 24px;padding:0 16px;color:var(--muted)}
+#installBtn{border-color:#29404a}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:center}
+.hero img{width:100%;border-radius:16px;border:1px solid #20202a}
+@media (max-width:860px){.hero{grid-template-columns:1fr}}
